@@ -24,3 +24,9 @@
     flex-direction: column;
     padding: 0;
 }
+
+.channel-icon {
+    width: 20px;
+    height: 20px;
+    
+}
