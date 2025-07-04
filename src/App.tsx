@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import MessageInput from "./components/MessageInput";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -15,6 +16,11 @@ function App() {
 
   return (
     <main className="container">
+      <div className="sidebar">
+        <Sidebar />
+      </div>
+
+      <div className="content">
       <h1>Welcome to Tauri + React</h1>
 
       <div className="row">
@@ -47,6 +53,8 @@ function App() {
         <button type="submit">Greet</button>
       </form>
       <p>{greetMsg}</p>
+      </div> 
+      
     </main>
   );
 }

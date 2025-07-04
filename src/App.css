@@ -113,4 +113,44 @@ button {
   button:active {
     background-color: #0f0f0f69;
   }
+  .sidebar {
+    background-color: #2f2f2f;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+}
+
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  min-width: 100px;
+  max-width: 150px;
+  width: 20%;
+  background-color: #f6f6f6;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    min-width: 100px;
+    max-width: 150px;
+  }
+}
+.content {
+  margin-left: max(100px, min(20%, 150px)); /* Matches sidebar size */
+  padding: 20px;
+  min-height: 100vh;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
 }
