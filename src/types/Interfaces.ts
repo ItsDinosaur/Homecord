@@ -2,7 +2,7 @@
 export interface Channel {
     id: number;
     name: string;
-    type: "text" | "voice" | "shopping";
+    type: "text" | "voice" | "shopping" | "login";
 }
 export interface Message {
     id: number;

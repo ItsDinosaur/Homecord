@@ -20,12 +20,6 @@ const renderChannel = (channel: Channel,
     );
 };
 
-//for now
-const channels: Channel[] = [
-    { id: 1, name: "General", type: "text" },
-    { id: 2, name: "Voice Chat", type: "voice" },
-    { id: 3, name: "Shopping", type: "shopping" },
-];
 
 export function Sidebar({ channels, onSelectChannel }: SidebarProps) {
     return (
@@ -34,6 +28,9 @@ export function Sidebar({ channels, onSelectChannel }: SidebarProps) {
             <List items={channels} 
             renderItem={(channel) => renderChannel(channel, onSelectChannel)} />
         </nav>
+        <footer className="sidebar-footer">
+            <p>Powered by Homecord</p>
+        </footer>
         </div>
     );
 }
