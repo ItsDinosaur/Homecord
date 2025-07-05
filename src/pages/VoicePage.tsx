@@ -1,6 +1,11 @@
 import React from "react";
+import { Channel } from "../types/Interfaces";
 
-function VoicePage() {
+interface VoicePageProps {
+  channel: Channel;
+}
+
+function VoicePage({ channel }: VoicePageProps) {
     return (
         <div className="voice-page">
             <h1>Voice Page</h1>

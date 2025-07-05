@@ -1,6 +1,11 @@
 import React from "react";
+import { Channel } from "../types/Interfaces";
 
-function ShoppingListPage() {
+interface ShoppingPageProps {
+  channel: Channel;
+}
+
+function ShoppingListPage( { channel }: ShoppingPageProps) {
     return (
         <div className="shopping-list-page">
             <h1>Shopping List Page</h1>

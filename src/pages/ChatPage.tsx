@@ -1,6 +1,11 @@
 import React from "react";
+import { Channel } from "../types/Interfaces";
 
-function ChatPage() {
+interface ChatPageProps {
+  channel: Channel;
+}
+
+function ChatPage({ channel }: ChatPageProps) {
     return (
         <div className="chat-page">
         <h1>Chat Page</h1>
