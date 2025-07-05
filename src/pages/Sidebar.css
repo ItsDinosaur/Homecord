@@ -30,7 +30,11 @@ ul {
 
 .channel-item {
     align-items: center;
-    background-color: rgb(43, 43, 43);
     margin: 3px;
 }
 
+.channel-item:hover {
+    background-color: rgb(63, 63, 63);
+    border-radius: 5px;
+    cursor: pointer;
+}

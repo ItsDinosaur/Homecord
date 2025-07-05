@@ -11,7 +11,7 @@ function ChannelElement({ channel }: { channel: Channel }) {
                 {channel.type === 'text' && <img src={hashtagChannelIcon} className="channel-icon hashtag" alt="Text Channel Icon" />}
                 {channel.type === 'voice' && <img src={volumeUpIcon} className="channel-icon volume-up" alt="Voice Channel Icon" />}
                 {channel.type === 'shopping' && <img src={shoppingCartIcon} className="channel-icon shopping-cart" alt="Shopping Channel Icon" />}
-                <b>{channel.name}</b>
+                <b>{channel.name.length>=12 ? channel.name.slice(0,10)+"..." : channel.name}</b>
             </a>
         </div>
     );
