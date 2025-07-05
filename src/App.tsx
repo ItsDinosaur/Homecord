@@ -1,7 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import "./appearance/App.css";
 import MessageInput from "./components/MessageInput";
 import {Sidebar} from "./components/Sidebar";
 import { Channel } from "./types/Interfaces";

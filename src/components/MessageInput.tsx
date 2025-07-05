@@ -1,4 +1,4 @@
-import "../pages/MessageInput.css";
+import "../appearance/MessageInput.css";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 

@@ -1,8 +1,10 @@
 
 .sidebar {
-    width: 250px;
+    width: 150px;
     height: 100vh;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    overflow: hidden;
 }
 
 .nav-links {

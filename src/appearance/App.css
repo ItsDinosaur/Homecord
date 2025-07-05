@@ -19,6 +19,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  overflow-y: auto;
 }
 
 .container {
@@ -107,7 +109,6 @@ button {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   }
 }
-
 
 .sidebar {
   position: fixed;
