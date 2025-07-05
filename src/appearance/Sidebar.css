@@ -1,10 +1,13 @@
 
 .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
     width: 150px;
-    height: 100vh;
+    height: 100%;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     overflow-y: auto;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .nav-links {

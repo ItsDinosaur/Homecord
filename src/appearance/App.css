@@ -21,6 +21,7 @@
   -webkit-text-size-adjust: 100%;
 
   overflow-y: auto;
+  max-height: 100%;
 }
 
 .container {
@@ -110,30 +111,8 @@ button {
   }
 }
 
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  min-width: 100px;
-  max-width: 150px;
-  width: 20%;
-  overflow-y: auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  word-wrap: break-word;
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    min-width: 100px;
-    max-width: 150px;
-  }
-}
 .content {
   margin-left: max(100px, min(20%, 150px)); /* Matches sidebar size */
-  padding: 20px;
-  min-height: 100vh;
   width: auto;
   box-sizing: border-box;
 }
