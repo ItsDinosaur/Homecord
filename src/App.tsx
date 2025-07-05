@@ -3,56 +3,46 @@ import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import MessageInput from "./components/MessageInput";
-import Sidebar from "./components/Sidebar";
+import {Sidebar} from "./components/Sidebar";
+import { Channel } from "./types/Interfaces";
+import ChatPage from "./pages/ChatPage.tsx";
+import VoicePage from "./pages/VoicePage.tsx";
+import ShoppingListPage from "./pages/ShoppingListPage.tsx";
+import HomePage from "./pages/HomePage.tsx";
+
+const channels: Channel[] = [
+  { id: 1, name: "General", type: "text" },
+  { id: 2, name: "Voice Chat", type: "voice" },
+  { id: 3, name: "Shopping", type: "shopping" },
+];
+
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const renderPage = () => {
+      if (!currentChannel) return <div className="p-4">Select a channel</div>;
+
+      switch (currentChannel.type) {
+        case "text":
+          return <ChatPage channel={currentChannel} />;
+        case "voice":
+          return <VoicePage channel={currentChannel} />;
+        case "shopping":
+          return <ShoppingListPage channel={currentChannel} />;
+        default:
+          return <HomePage />;
+      }
+    };
 
   return (
     <main className="container">
       <div className="sidebar">
-        <Sidebar />
+        <Sidebar channels={channels} onSelectChannel={setCurrentChannel}/>
       </div>
 
       <div className="content">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <MessageInput />
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+      {renderPage()}
       </div> 
       
     </main>
