@@ -34,7 +34,7 @@ struct LoginResponse {
 #[tauri::command]
 pub async fn login(username: String, password: String) -> Result<String, String> {
     let client = Client::new();
-    let url = "http://localhost:8000/api/login"; //TO CHANGE
+    let url = "http://homecord.itsdinosaur.com/login";
 
     let payload = LoginPayload {
         username,
@@ -49,12 +49,15 @@ pub async fn login(username: String, password: String) -> Result<String, String>
         .map_err(|e| format!("Request failed: {}", e))?;
 
     if response.status().is_success() {
+        eprintln!("Login successful");
+
         let login_response: LoginResponse = response
             .json()
             .await
             .map_err(|e| format!("Failed to parse response: {}", e))?;
         Ok(login_response.token)
     } else {
+        eprintln("Login failed with status: {}", response.status());
         let error_message = response
             .text()
             .await
