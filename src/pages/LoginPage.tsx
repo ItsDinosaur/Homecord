@@ -26,7 +26,11 @@ function LoginPage({ channel }: LoginPageProps) {
             alert("Username and password cannot be empty");
             return;
         }
-        login(username, password);
+        invoke("login", { username, password })
+            .then((response) => {
+                console.log("Login successful:", response);
+            }
+        )
 
 
 

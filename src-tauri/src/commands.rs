@@ -57,7 +57,7 @@ pub async fn login(username: String, password: String) -> Result<String, String>
             .map_err(|e| format!("Failed to parse response: {}", e))?;
         Ok(login_response.token)
     } else {
-        eprintln("Login failed with status: {}", response.status());
+        println!("Login failed with status: {}", response.status());
         let error_message = response
             .text()
             .await
