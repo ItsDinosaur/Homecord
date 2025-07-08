@@ -23,7 +23,7 @@ function App() {
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
 
   const renderPage = () => {
-      if (!currentChannel) return <div className="p-4">Select a channel</div>;
+      if (!currentChannel) return <HomePage />;
 
       switch (currentChannel.type) {
         case "text":
