@@ -10,12 +10,13 @@
     background-color: #201d205e;
     border: #201d205e 1px solid;
     border-radius: 8px;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
     padding: 2em;
     margin: 1em;
     width: 88vw; /* Set width relative to viewport */
     min-width: 300px; /* Optional: minimum width */
     max-width: fit-content;
+    backdrop-filter: blur(19px), saturate(180%);
 }
 
 .form-group {

@@ -5,14 +5,20 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafb);
 }
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  background-image: linear-gradient(135deg, #38f4c5, #e0e0e0);
+}
+
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
 
-  height: 100vh;
-  background-color: #58cd2d;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -34,7 +40,7 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  back
+  
 }
 
 .logo {
