@@ -1,17 +1,19 @@
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
+use chrono::NaiveDateTime;
 
 #[derive(Serialize)]
 struct Message {
     pub content: String,
-    pub channel_id: String,
-    pub username: String,
+    pub channel_id: i32,
+    pub user_id: i32,
     pub image_url: String,
+    timestamp: NaiveDateTime,
 }
 
 pub async fn send_message( message: Message) -> Result<(), String> {
     let client = Client::new();
-    let url = "http://homecord.itsdinosaur.com/send_message";
+    let url = "http://homecord.itsdinosaur.com/protected/send_message";
 
     // JWT token should be set here and sent in the headers
 

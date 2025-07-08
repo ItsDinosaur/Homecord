@@ -40,14 +40,14 @@ function App() {
     };
 
   return (
-    <main className="container">
+    <div className="container">
         <Sidebar channels={channels} onSelectChannel={setCurrentChannel}/>
 
       <div className="content">
       {renderPage()}
       </div> 
       
-    </main>
+    </div>
   );
 }
 

@@ -11,8 +11,11 @@
   line-height: 24px;
   font-weight: 400;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  height: 100vh;
+  background-color: #58cd2d;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,7 +24,7 @@
   -webkit-text-size-adjust: 100%;
 
   overflow-y: auto;
-  max-height: 100%;
+  
 }
 
 .container {
@@ -31,6 +34,7 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  back
 }
 
 .logo {
