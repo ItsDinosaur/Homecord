@@ -16,14 +16,14 @@ pub async fn login(
     }
 }
 */
-
+use crate::user::encryption::hash;
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
 
 #[derive(Serialize)]
 struct LoginPayload {
     username: String,
-    password: String,
+    encrypted_password: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -35,10 +35,11 @@ struct LoginResponse {
 pub async fn login(username: String, password: String) -> Result<String, String> {
     let client = Client::new();
     let url = "http://homecord.itsdinosaur.com/login";
+    let encrypted_password = hash(password.as_str());
 
     let payload = LoginPayload {
         username,
-        password,
+        encrypted_password,
     };
 
     let response = client
