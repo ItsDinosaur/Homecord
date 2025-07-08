@@ -35,7 +35,7 @@ struct LoginResponse {
 pub async fn login(username: String, password: String) -> Result<String, String> {
     let client = Client::new();
     let url = "http://homecord.itsdinosaur.com/login";
-    let encrypted_password = hash(password.as_str());
+    let encrypted_password = hash(password.as_str()).to_string();
 
     let payload = LoginPayload {
         username,
