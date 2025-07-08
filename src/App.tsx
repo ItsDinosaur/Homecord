@@ -7,6 +7,7 @@ import VoicePage from "./pages/VoicePage.tsx";
 import ShoppingListPage from "./pages/ShoppingListPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
+import Divider from "@mui/material/Divider";
 
 const channels: Channel[] = [
   { id: 1, name: "General", type: "text" },
@@ -15,6 +16,10 @@ const channels: Channel[] = [
   { id: 4, name: "Login", type: "login" },
 ];
 
+const style = {
+    borderRadius: 1,
+    border: '.5px solid',
+};
 
 function App() {
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
@@ -39,7 +44,7 @@ function App() {
   return (
     <div className="container">
       <Sidebar channels={channels} onSelectChannel={setCurrentChannel}/>
-
+      
       <div className="content">
       {renderPage()}
       </div> 

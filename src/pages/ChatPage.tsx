@@ -11,7 +11,6 @@ function ChatPage({ channel }: ChatPageProps) {
     return (
         <div className="chat-page">
         <h1>Chat Page</h1>
-        <p>This is the chat page where users can send and receive messages.</p>
         <div className="chat-content">
             {/* Here you can render messages, chat history, etc. */}
             <h1>awdadadd</h1>

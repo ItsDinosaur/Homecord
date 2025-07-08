@@ -46,8 +46,7 @@ function LoginPage({ channel }: LoginPageProps) {
             <h1>Login Page</h1>
             <div className="login-content">
                 <form onSubmit={handleSubmit} className="login-form">
-                    <div className="form-group">
-                        <label htmlFor="username">Username:</label>
+                    <div className="form-group">   
                         <input 
                             type="text" 
                             id="username" 
@@ -59,7 +58,6 @@ function LoginPage({ channel }: LoginPageProps) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">Password:</label>
                         <input type="password" 
                             id="password" 
                             name="password" 
