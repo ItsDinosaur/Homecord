@@ -31,10 +31,6 @@ function LoginPage({ channel }: LoginPageProps) {
                 console.log("Login successful:", response);
             }
         )
-
-
-
-
         /*
         // TESTING SOME FEATURES, MAY BE SOME STUPID THINGS HERE
         window.history.pushState({}, "", "/loggedin"); // Update the URL to reflect the home page after login
@@ -48,7 +44,6 @@ function LoginPage({ channel }: LoginPageProps) {
     return (
         <div className="login-page">
             <h1>Login Page</h1>
-            <p>This is the login page where you can create a user or log in as one.</p>
             <div className="login-content">
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">

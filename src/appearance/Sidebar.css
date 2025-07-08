@@ -1,8 +1,5 @@
-
 .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
+    position: relative;
     width: 150px;
     height: 100vh;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
@@ -10,6 +7,7 @@
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .nav-links {
@@ -19,7 +17,6 @@
     height: auto;
     display: flex;
     align-items: center;
-    padding-bottom: 75px;
     flex-direction: column;
 }
 
@@ -39,6 +36,17 @@ ul {
 .channel-item {
     align-items: center;
     margin: 3px;
+    justify-content: center;
+}
+
+.channel-item a {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 30px; /* Adjust height for better spacing */
+    padding-left: 5px;
 }
 
 .channel-item:hover {
@@ -63,13 +71,15 @@ ul {
 }
 
 .sidebar-footer {
-    position: fixed;
-    bottom: 0;
-    width: 150px; /* Match sidebar width */
+    margin-top: auto;
+    width: 100%;
     height: 75px;
     text-align: center;
-    background-color: inherit; /* Inherit background from sidebar */
-    z-index: 5; /* Ensure footer stays above scrolling content */
+    background-color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .add-channel-button{
@@ -85,4 +95,14 @@ ul {
 .add-channel-icon {
     width: 30px;
     height: 30px;
+}
+
+.sidebar-header {
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
 }

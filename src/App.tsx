@@ -1,8 +1,5 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./appearance/App.css";
-import MessageInput from "./components/MessageInput";
 import {Sidebar} from "./components/Sidebar";
 import { Channel } from "./types/Interfaces";
 import ChatPage from "./pages/ChatPage.tsx";
@@ -41,7 +38,7 @@ function App() {
 
   return (
     <div className="container">
-        <Sidebar channels={channels} onSelectChannel={setCurrentChannel}/>
+      <Sidebar channels={channels} onSelectChannel={setCurrentChannel}/>
 
       <div className="content">
       {renderPage()}

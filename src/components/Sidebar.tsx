@@ -38,7 +38,7 @@ export function Sidebar({ channels, onSelectChannel }: SidebarProps) {
             </div>
             <div className="sidebar-content">
                 <nav className="nav-links">
-                    <List 
+                    <List
                         items={channels} 
                         renderItem={(channel) => renderChannel(channel, onSelectChannel)}
                     />
