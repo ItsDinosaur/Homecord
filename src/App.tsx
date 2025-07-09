@@ -8,6 +8,7 @@ import ShoppingListPage from "./pages/ShoppingListPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import Divider from "@mui/material/Divider";
+import Notification from "./components/Notification.tsx";
 
 const channels: Channel[] = [
   { id: 1, name: "General", type: "text" },
@@ -47,8 +48,8 @@ function App() {
       
       <div className="content">
       {renderPage()}
-      </div> 
-      
+      </div>
+      <Notification />
     </div>
   );
 }

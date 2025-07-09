@@ -11,14 +11,13 @@
 }
 
 .nav-links {
+    padding-top: 20px;
     margin: 0;
-    padding-left: 5px;
-    width: 145px;
+    width: 100%;
     height: auto;
     display: flex;
     align-items: center;
     flex-direction: column;
-    overflow-x: hidden;
 }
 
 .channel-icon {
@@ -80,7 +79,6 @@ ul {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .add-channel-button{

@@ -19,20 +19,28 @@ body {
   line-height: 24px;
   font-weight: 400;
 
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  overflow-y: auto;
+  
 }
 
 .container {
   margin: 0;
-  padding: 0;
+  padding-top: 0vh;
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  width: 100vw;
+  justify-content: center;
+  text-align: center;
+  
 }
 
 .logo {
@@ -115,16 +123,10 @@ button {
 
 .content {
   flex: 1;
-  width: calc(100vw - 150px);
-  padding: 20px;
+  padding: 10px;
   display: flex;
   overflow-x: hidden;
-  overflow-y: auto;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  box-sizing: border-box;
 }
 
 .app-container {

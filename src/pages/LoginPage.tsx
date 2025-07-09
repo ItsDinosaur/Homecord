@@ -2,6 +2,7 @@ import "../appearance/LoginPage.css";
 import { Channel } from "../types/Interfaces";
 import React from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 interface LoginPageProps {
   channel: Channel;
@@ -29,6 +30,7 @@ function LoginPage({ channel }: LoginPageProps) {
         invoke("login", { username, password })
             .then((response) => {
                 console.log("Login successful:", response);
+                toast.success("You are logged in as " + username);
             }
         )
         /*
