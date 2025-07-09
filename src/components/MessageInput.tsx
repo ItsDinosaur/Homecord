@@ -13,15 +13,17 @@ function MessageInput() {
   };
 
   return (
-    <form className="message-input" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button type="submit">Send</button>
-    </form>
+    <div className="message-input-container">
+      <form className="message-input" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
   );
 }
 export default MessageInput;

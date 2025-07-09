@@ -38,7 +38,9 @@ function ChatPage({ channel }: ChatPageProps) {
             </div>
             <div ref={endRef}></div>
         </div>
-        <MessageInput />
+        <div className="MessageInput-container">
+            <MessageInput />
+        </div>
         </div>
     );
     }

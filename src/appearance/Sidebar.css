@@ -11,8 +11,7 @@
 }
 
 .nav-links {
-    padding-top: 20px;
-    margin: 0;
+    margin-left: 5px;
     width: 100%;
     height: auto;
     display: flex;
@@ -104,4 +103,5 @@ ul {
 .sidebar-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
 }

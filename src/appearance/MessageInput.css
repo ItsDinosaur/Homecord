@@ -1,24 +1,14 @@
 
-.message-input {
-    display: flex;
+form {
     align-items: center;
     justify-content: center;
-    padding-right: 2em;
-    padding-left: 4em;
-    border-radius: 2px; 
-}
-
-form {
-    display: flex;
-    align-items: center;
 }
 
 input[type="text"] {
-    flex: 1;
     padding: 0.5em;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-right: 0.5em;
-    margin-left: 0.5em;
     font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
 }
