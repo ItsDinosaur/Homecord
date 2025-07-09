@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Channel } from "../types/Interfaces";
-import MessageInput from "../components/MessageInput";
 import "../appearance/ChatPage.css";
 import exampleImage from "../assets/example.png"; // Example image path
 import exampleImage2 from "../assets/example2.png"; // Another example image path
@@ -14,16 +13,18 @@ interface ChatPageProps {
 function ChatPage({ channel }: ChatPageProps) {
     const endRef = React.createRef<HTMLDivElement>();
     const {messages, sendMessage} = useChatSocket(channel.id);
+    const [input, setInput] = useState("");
 
     const handleSend = () => {
         const newMessage: Message = {
             username: "User1", // Replace with actual username
             channelId: channel.id,
-            content: "This is a new message",
+            content: input,
             timestamp: new Date().toISOString(),
             imageUrl: exampleImage // Optional image URL
         };
         sendMessage(newMessage);
+        setInput("");
     };
 
     useEffect(() => {
@@ -61,7 +62,12 @@ function ChatPage({ channel }: ChatPageProps) {
             </div>
         </div>
         <div className="MessageInput-container">
-            <MessageInput />
+            <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message..."
+            />
+            <button onClick={handleSend}>Send</button>
         </div>
         </div>
     );

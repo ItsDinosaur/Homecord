@@ -5,7 +5,7 @@ export interface Channel {
     type: "text" | "voice" | "shopping" | "login";
 }
 export interface Message {
-    id: number;
+    username: string;
     channelId: number;
     content: string;
     timestamp: string;
