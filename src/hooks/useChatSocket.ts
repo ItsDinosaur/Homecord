@@ -6,6 +6,7 @@ export function useChatSocket(channelId: number) {
     const socketRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
+        console.log("Connecting to WebSocket for channel:", channelId);
         const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}`);
         socketRef.current = socket;
 

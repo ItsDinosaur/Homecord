@@ -21,8 +21,8 @@ function ChatPage({ channel }: ChatPageProps) {
             channelId: channel.id,
             content: input,
             timestamp: new Date().toISOString(),
-            imageUrl: exampleImage // Optional image URL
         };
+        console.log("Sending message:", newMessage);
         sendMessage(newMessage);
         setInput("");
     };

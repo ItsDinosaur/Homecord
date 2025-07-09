@@ -7,14 +7,14 @@ import VoicePage from "./pages/VoicePage.tsx";
 import ShoppingListPage from "./pages/ShoppingListPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
-import Divider from "@mui/material/Divider";
 import Notification from "./components/Notification.tsx";
 
 const channels: Channel[] = [
   { id: 1, name: "General", type: "text" },
-  { id: 2, name: "Voice Chat", type: "voice" },
-  { id: 3, name: "Shopping", type: "shopping" },
-  { id: 4, name: "Login", type: "login" },
+  { id: 2, name: "Support", type: "text" },
+  { id: 3, name: "Voice Chat", type: "voice" },
+  { id: 4, name: "Shopping", type: "shopping" },
+  { id: 5, name: "Login", type: "login" },
 ];
 
 const style = {

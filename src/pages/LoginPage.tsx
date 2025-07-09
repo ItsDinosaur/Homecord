@@ -8,14 +8,6 @@ interface LoginPageProps {
   channel: Channel;
 }
 
-async function login(username: string, password: string) {
-  try {
-    const response = await invoke("login", { username, password });
-    console.log("Login successful:", response);
-  } catch (error) {
-    console.error("Login failed:", error);
-  }
-}
 
 function LoginPage({ channel }: LoginPageProps) {
     const [username, setUsername] = React.useState("");
@@ -29,7 +21,6 @@ function LoginPage({ channel }: LoginPageProps) {
         }
         invoke("login", { username, password })
             .then((response) => {
-                console.log("Login successful:", response);
                 toast.success("You are logged in as " + username);
             }
         )
