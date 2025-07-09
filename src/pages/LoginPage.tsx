@@ -24,7 +24,7 @@ function LoginPage({ channel }: LoginPageProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); // Prevents page reload - also seems to prevent the actual efect of login but also prevents url from containing plain login and password
         if (username.trim() === "" || password.trim() === "") {
-            alert("Username and password cannot be empty");
+            toast.warn("Username and password cannot be empty");
             return;
         }
         invoke("login", { username, password })
@@ -47,8 +47,7 @@ function LoginPage({ channel }: LoginPageProps) {
         <div className="login-page">
             <h1>Login Page</h1>
             <div className="login-content">
-                <form onSubmit={handleSubmit} className="login-form">
-                    <div className="form-group">   
+                <form onSubmit={handleSubmit} className="login-form"> 
                         <input 
                             type="text" 
                             id="username" 
@@ -57,9 +56,8 @@ function LoginPage({ channel }: LoginPageProps) {
                             value = {username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Enter username"
+                            className="input"
                         />
-                    </div>
-                    <div className="form-group">
                         <input type="password" 
                             id="password" 
                             name="password" 
@@ -67,8 +65,8 @@ function LoginPage({ channel }: LoginPageProps) {
                             value={password} 
                             onChange={(e) => setPassword(e.target.value)} 
                             placeholder="Enter password"
+                            className="input"
                         />
-                    </div>
                     <button type="submit">Login</button>
                     <button type="button" onClick={() => alert("Create User functionality not implemented yet")}>
                         Create User

@@ -15,8 +15,6 @@ pub async fn send_message( message: Message) -> Result<(), String> {
     let client = Client::new();
     let url = "http://homecord.itsdinosaur.com/protected/send_message";
 
-    // JWT token should be set here and sent in the headers
-
     let response = client
         .post(url)
         .json(&message)

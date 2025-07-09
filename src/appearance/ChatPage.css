@@ -68,27 +68,12 @@
 }
 
 .MessageInput-container{
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 5px;
     background-color: #201d205e;
     border: #201d205e 1px solid;
     border-radius: 8px;
     box-shadow: 0 2px 2px rgba(0, 0,
     0, 0.2);
-    position: relative;
-    height: 10vh;
     width: 100%;
+    flex: 1;
     backdrop-filter: blur(5px) saturate(1.8);
-
-    .message-input {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-    }
 }
