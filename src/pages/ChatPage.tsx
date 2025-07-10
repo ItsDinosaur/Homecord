@@ -36,7 +36,7 @@ function ChatPage({ channel }: ChatPageProps) {
         <h1>{channel.name}</h1>
         <div className="chat-content" ref={endRef}>
             {/* Here you can render messages, chat history, etc. */}
-            {messages.map((message, index) => (
+            {[...messages].reverse().map((message, index) => (
                 <div key={index} className={`message ${message.username === "kai" ? "own" : "other"}`}>
                     <div className="message-content">
                         <p>{message.content}</p>
