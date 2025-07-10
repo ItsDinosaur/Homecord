@@ -45,20 +45,6 @@ function ChatPage({ channel }: ChatPageProps) {
                     <span>{new Date(message.timestamp).toLocaleTimeString()}</span>
                 </div>
             ))}
-            <div className="message own">
-                <div className="message-content">
-                    <p>This is a sample message </p>
-                </div>
-                <img src={exampleImage}></img>
-                <span>1 minute ago</span>
-            </div>
-            <div className="message other">
-                <div className="message-content">
-                    <p>This is a sample message in the chat.</p>
-                </div>
-                <img src={exampleImage2}></img>
-                <span>1 minute ago</span>
-            </div>
         </div>
         <div className="MessageInput-container">
             <Grid>
