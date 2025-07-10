@@ -5,6 +5,7 @@ import exampleImage from "../assets/example.png"; // Example image path
 import exampleImage2 from "../assets/example2.png"; // Another example image path
 import { useChatSocket } from "../hooks/useChatSocket";
 import { Message } from "../types/Interfaces";
+import { Grid } from "@mui/material";
 
 interface ChatPageProps {
   channel: Channel;
@@ -17,7 +18,7 @@ function ChatPage({ channel }: ChatPageProps) {
 
     const handleSend = () => {
         const newMessage: Message = {
-            username: "User1", // Replace with actual username
+            username: "kai", // Replace with actual username
             channelId: channel.id,
             content: input,
             timestamp: new Date().toISOString(),
@@ -36,7 +37,7 @@ function ChatPage({ channel }: ChatPageProps) {
         <div className="chat-content" ref={endRef}>
             {/* Here you can render messages, chat history, etc. */}
             {messages.map((message, index) => (
-                <div key={index} className={`message ${message.username === "User1" ? "own" : "other"}`}>
+                <div key={index} className={`message ${message.username === "kai" ? "own" : "other"}`}>
                     <div className="message-content">
                         <p>{message.content}</p>
                     </div>
@@ -46,9 +47,7 @@ function ChatPage({ channel }: ChatPageProps) {
             ))}
             <div className="message own">
                 <div className="message-content">
-                    <p>This is a sample message in the chat. And a little longer one..... ........
-                        ....awdaw dadawdawdawda wdawdada
-                        wdada</p>
+                    <p>This is a sample message </p>
                 </div>
                 <img src={exampleImage}></img>
                 <span>1 minute ago</span>
@@ -62,12 +61,15 @@ function ChatPage({ channel }: ChatPageProps) {
             </div>
         </div>
         <div className="MessageInput-container">
-            <input
+            <Grid>
+            <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message..."
+            className="message-input"
             />
-            <button onClick={handleSend}>Send</button>
+            <button onClick={handleSend} className="send-button">Send</button>
+            </Grid>
         </div>
         </div>
     );
