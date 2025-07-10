@@ -1,5 +1,6 @@
 import React from "react";
 import { Channel } from "../types/Interfaces";
+import "../appearance/ShoppingList.css";
 
 interface ShoppingPageProps {
   channel: Channel;
@@ -8,33 +9,29 @@ interface ShoppingPageProps {
 function ShoppingListPage( { channel }: ShoppingPageProps) {
     return (
         <div className="shopping-list-page">
-            <h1>Shopping List Page</h1>
-            <p>This is the shopping list page where users can manage their shopping items.</p>
-            {/* Add more components or content as needed */}
-            <form className="addItemForm"> 
-                <div className="form-group">
-                    <label htmlFor="itemName">Item Name:</label>
-                    <input 
-                        type="text" 
-                        id="itemName" 
-                        name="itemName" 
-                        required 
-                        placeholder="Enter item name"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="itemQuantity">Quantity:</label>
-                    <input 
-                        type="number" 
-                        id="itemQuantity" 
-                        name="itemQuantity" 
-                        required 
-                        placeholder="Enter quantity"
-                    />
-                    <button type="submit">Add</button>
-                </div>
-                <button type="submit">Add Item</button>
-            </form> 
+            <h1>Grocery List</h1>
+             <div id="checklist">
+                <input id="01" type="checkbox" name="r" value="1" />
+                <label >Bread</label>
+                <input id="02" type="checkbox" name="r" value="2" />
+                <label >Cheese</label>
+                <input id="03" type="checkbox" name="r" value="3" />
+                <label >Coffee</label>
+                <input id="04" type="checkbox" name="r" value="4" />
+                <label >Eggs</label>
+                <input id="05" type="checkbox" name="r" value="5"
+                />
+                <label >Milk</label>
+                <input id="06" type="checkbox" name="r" value="6"
+                />
+                <label >Pasta</label>
+                <input id="07" type="checkbox" name="r" value="7"
+                />
+                <label >Rice</label>
+                <input id="08" type="checkbox" name="r" value="8"
+                />
+                <label >Tomatoes</label>
+            </div>
         </div>
     );
 }
