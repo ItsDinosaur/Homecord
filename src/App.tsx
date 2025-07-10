@@ -17,11 +17,6 @@ const channels: Channel[] = [
   { id: 5, name: "Login", type: "login" },
 ];
 
-const style = {
-    borderRadius: 1,
-    border: '.5px solid',
-};
-
 function App() {
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
 
