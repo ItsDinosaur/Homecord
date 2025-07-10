@@ -13,7 +13,8 @@ interface ChatPageProps {
 
 function ChatPage({ channel }: ChatPageProps) {
     const endRef = React.createRef<HTMLDivElement>();
-    const {messages, sendMessage} = useChatSocket(channel.id);
+    //const endRef = useRef<HTMLDivElement>(null);
+    const {messages, sendMessage} = useChatSocket();
     const [input, setInput] = useState("");
 
     const handleSend = () => {

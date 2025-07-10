@@ -2,31 +2,56 @@ import { useEffect, useRef, useState } from "react";
 import { Message } from "../types/Interfaces";
 import { invoke } from "@tauri-apps/api/core";
 
-export function useChatSocket(channelId: number) {
+export function useChatSocket() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isConnected, setIsConnected] = useState(false);
     const socketRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
-        if (socketRef.current?.readyState === WebSocket.OPEN) {
-            return;
-        }
+        let cancelled = false;
+
         const connectWebSocket = async () => {
+            // If there's already a connection, don't create another
+            if (socketRef.current?.readyState === WebSocket.OPEN || 
+                socketRef.current?.readyState === WebSocket.CONNECTING) {
+                console.log("Connection already exists, skipping...");
+                return;
+            }
+
             try {
                 const access_token = await invoke<string>("get_access_token");
-                console.log("ACCESS_TOKEN = ", access_token);
-                console.log("Connecting to WebSocket for channel:", channelId);
+                
+                // Check if effect was cancelled while getting token
+                if (cancelled) {
+                    console.log("Effect cancelled during token fetch");
+                    return;
+                }
+
+                console.log("Creating WebSocket connection for channel:");
                 
                 const encoded_token = encodeURIComponent(access_token);
-                const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}?access_token=${encoded_token}`);
+                const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/?access_token=${encoded_token}`);
+                
+                // Check again if cancelled after creating socket
+                if (cancelled) {
+                    console.log("Effect cancelled after socket creation");
+                    socket.close();
+                    return;
+                }
+
                 socketRef.current = socket;
 
                 socket.onopen = () => {
+                    if (cancelled) {
+                        socket.close();
+                        return;
+                    }
                     console.log("WebSocket connection established");
                     setIsConnected(true);
                 };
 
                 socket.onmessage = (event) => {
+                    if (cancelled) return;
                     const newMessage: Message = JSON.parse(event.data);
                     setMessages((prevMessages) => [newMessage, ...prevMessages]);
                 };
@@ -39,8 +64,8 @@ export function useChatSocket(channelId: number) {
                 socket.onerror = (error) => {
                     console.error("WebSocket error:", error);
                     setIsConnected(false);
-
                 };
+
             } catch (error) {
                 console.error("Failed to get access token:", error);
             }
@@ -48,16 +73,17 @@ export function useChatSocket(channelId: number) {
 
         connectWebSocket();
 
-        // Cleanup function to close WebSocket on unmount
+        // Return cleanup function
         return () => {
-            if (socketRef.current) {
-                console.log("Cleaning up WebSocket connection");
+            console.log("useEffect cleanup called");
+            cancelled = true;
+            if (socketRef.current && socketRef.current.readyState !== WebSocket.CLOSED) {
                 socketRef.current.close();
-                socketRef.current = null;
-                setIsConnected(false);
             }
+            socketRef.current = null;
+            setIsConnected(false);
         };
-    }, [channelId]);
+    }, []);
 
     const sendMessage = (message: Message) => {
         if (socketRef.current?.readyState === WebSocket.OPEN) {
