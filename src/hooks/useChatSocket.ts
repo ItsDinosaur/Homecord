@@ -1,29 +1,47 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Message } from "../types/Interfaces";
 import { wsManager } from "./websocketManager";
-export function useChatSocket() {
+
+export function useChatSocket(channelId?: number) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isConnected, setIsConnected] = useState(wsManager.getConnectionStatus());
 
     useEffect(() => {
+        const statusListener = (connected: boolean) => {
+            setIsConnected(connected);
+        };
+
+        wsManager.addStatusListener(statusListener);
+
+        return () => {
+            wsManager.removeStatusListener(statusListener);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!channelId) {
+            console.log("No channelId provided, skipping message listener setup");
+            return;
+        }
+
+        console.log(`Setting up message listener for channel ${channelId}`);
+
         const messageListener = (message: Message) => {
+            console.log(`Received message in hook for channel ${channelId}:`, message);
             setMessages((prevMessages) => [message, ...prevMessages]);
         };
 
-        const statusListener = (connected: boolean) => {
-            setIsConnected(connected);
-        }
+        // Add listener for this specific channel
+        wsManager.addChannelMessageListener(channelId, messageListener);
 
-        // Add listeners
-        wsManager.addMessageListener(messageListener);
-        wsManager.addStatusListener(statusListener);
+        // Clear messages when switching channels
+        setMessages([]);
 
-        // Cleanup listeners on unmount
         return () => {
-            wsManager.removeMessageListener(messageListener);
-            wsManager.removeStatusListener(statusListener);
-        }
-    }, []);
+            console.log(`Cleaning up message listener for channel ${channelId}`);
+            wsManager.removeChannelMessageListener(channelId, messageListener);
+        };
+    }, [channelId]);
 
     const connectWebSocket = async () => {
         await wsManager.connectWebSocket();
@@ -34,9 +52,20 @@ export function useChatSocket() {
     };
 
     const sendMessage = (message: Message) => {
-        wsManager.sendMessage(message);
+        if (channelId) {
+            wsManager.sendMessage(message, channelId);
+        } else {
+            console.warn("❌ Cannot send message: No channel ID provided");
+        }
     };
 
-    return { isConnected, messages, connectWebSocket, disconnectWebSocket, sendMessage };
-    
+    return { 
+        isConnected, 
+        messages, 
+        connectWebSocket, 
+        disconnectWebSocket, 
+        sendMessage,
+        // Debug helper
+        listenerCounts: wsManager.getChannelListenerCounts()
+    };
 }

@@ -12,19 +12,21 @@ interface ChatPageProps {
 }
 
 function ChatPage({ channel }: ChatPageProps) {
-    const endRef = React.createRef<HTMLDivElement>();
-    //const endRef = useRef<HTMLDivElement>(null);
-    const {messages, sendMessage} = useChatSocket();
+    const endRef = useRef<HTMLDivElement>(null);
+    const { messages, sendMessage, isConnected, listenerCounts } = useChatSocket(channel.id);
     const [input, setInput] = useState("");
 
     const handleSend = () => {
+        if (!input.trim()) return;
+
         const newMessage: Message = {
             username: "kai", // Replace with actual username
-            channelId: channel.id,
             content: input,
             timestamp: new Date().toISOString(),
+            // channelId will be added automatically by sendMessage
         };
-        console.log("Sending message:", newMessage);
+        
+        console.log("Sending message:", newMessage, "to channel:", channel.id);
         sendMessage(newMessage);
         setInput("");
     };
@@ -32,6 +34,7 @@ function ChatPage({ channel }: ChatPageProps) {
     useEffect(() => {
         endRef.current?.scrollTo({ top: endRef.current.scrollHeight, behavior: "smooth" });
     }, [messages]);
+
     return (
         <div className="chat-page">
         <h1>{channel.name}</h1>

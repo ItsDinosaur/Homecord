@@ -6,10 +6,10 @@ export interface Channel {
 }
 export interface Message {
     username: string;
-    channelId: number;
     content: string;
     timestamp: string;
     imageUrl?: string;
+    //channelId added automaticaly by sendMessage
 }
 
 export interface LoginResponse {
