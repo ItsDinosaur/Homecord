@@ -19,6 +19,7 @@ pub async fn login(
 use crate::user::encryption::hash;
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
+use keyring::Entry;
 
 #[derive(Serialize)]
 struct LoginPayload {
@@ -28,7 +29,8 @@ struct LoginPayload {
 
 #[derive(Deserialize, Debug)]
 struct LoginResponse {
-    token: String,
+    access_token: String,
+    refresh_token: String,
 }
 
 #[tauri::command]
@@ -56,7 +58,7 @@ pub async fn login(username: String, password: String) -> Result<String, String>
             .json()
             .await
             .map_err(|e| format!("Failed to parse response: {}", e))?;
-        Ok(login_response.token)
+        Ok(login_response.access_token)
     } else {
         println!("Login failed with status: {}", response.status());
         let error_message = response
@@ -65,4 +67,35 @@ pub async fn login(username: String, password: String) -> Result<String, String>
             .unwrap_or_else(|_| "Unknown error".to_string());
         Err(format!("Login failed: {}", error_message))
     }
+}
+
+#[tauri::command]
+pub async fn store_tokens(access_token: String, refresh_token: String) -> Result<(), String> {       //keyring storage
+    let access_entry = Entry::new("homecord", "access_token")
+        .map_err(|e| format!("Failed to create acces token entry {}", e))?;
+    let refresh_entry = Entry::new("homecord", "refresh_token")
+        .map_err(|e| format!("Failed to create refresh token entry {}", e))?;
+
+    access_entry.set_password(&access_token)
+        .map_err(|e| format!("Failed to store access token: {}", e))?;
+    refresh_entry.set_password(&refresh_token)
+        .map_err(|e| format!("Failed to store refresh token: {}", e))?;
+
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn get_access_token() -> Result<String, String> {
+    let entry = Entry::new("homecord", "acces_token")
+        .map_err(|e| format!("Failed to create access token entry: {}", e))?;
+    entry.get_password()
+        .map_err(|e| format!("Failed to get access token: {}", e))
+}
+
+#[tauri::command]
+pub async fn get_refresh_token() -> Result<String, String> {
+    let entry = Entry::new("homecord", "refresh_token")
+        .map_err(|e| format!("Failed to create refresh token entry: {}", e))?;
+    entry.get_password()
+        .map_err(|e| format!("Failed to get refresh token: {}", e))
 }

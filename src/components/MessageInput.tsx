@@ -9,7 +9,7 @@ function MessageInput() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevents page reload
     setMessage(""); // Clear the input
-    window.history.pushState({}, "", "/sent");    //to test window redirection from login page, may be deleted later
+    
   };
 
   return (

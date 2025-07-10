@@ -1,4 +1,5 @@
 import React from 'react';
+import "../appearance/HomePage.css";
 
 const HomePage: React.FC = () => {
     return (

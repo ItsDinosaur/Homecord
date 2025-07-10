@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Message } from "../types/Interfaces";
+import { invoke } from "@tauri-apps/api/core";
 
 export function useChatSocket(channelId: number) {
     const [messages, setMessages] = useState<Message[]>([]);
     const socketRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
+        const access_token = invoke("get_access_token");
         console.log("Connecting to WebSocket for channel:", channelId);
-        const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}`);
+        const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}?token=${access_token}`);
         socketRef.current = socket;
 
         socket.onopen = () => {
