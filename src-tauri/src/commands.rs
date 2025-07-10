@@ -72,9 +72,9 @@ pub async fn login(username: String, password: String) -> Result<LoginResponse, 
 
 #[tauri::command]
 pub async fn store_tokens(accessToken: String, refreshToken: String) -> Result<(), String> {       //keyring storage
-    let access_entry = Entry::new("homecord", "accessToken")
+    let access_entry = Entry::new("homecord-app", "accessToken")
         .map_err(|e| format!("Failed to create access token entry {}", e))?;
-    let refresh_entry = Entry::new("homecord", "refreshToken")
+    let refresh_entry = Entry::new("homecord-app", "refreshToken")
         .map_err(|e| format!("Failed to create refresh token entry {}", e))?;
 
     access_entry.set_password(&accessToken)
@@ -97,7 +97,7 @@ pub async fn get_access_token() -> Result<String, String> {
 #[tauri::command]
 pub async fn get_access_token() -> Result<String, String> {
     eprintln!("Attempting to retrieve access token...");
-    let entry = Entry::new("homecord", "accessToken")
+    let entry = Entry::new("homecord-app", "accessToken")
         .map_err(|e| {
             eprintln!("Failed to create entry: {}", e);
             format!("Failed to create entry: {}", e)
@@ -117,7 +117,7 @@ pub async fn get_access_token() -> Result<String, String> {
 
 #[tauri::command]
 pub async fn get_refresh_token() -> Result<String, String> {
-    let entry = Entry::new("homecord", "refreshToken")
+    let entry = Entry::new("homecord-app", "refreshToken")
         .map_err(|e| format!("Failed to create refresh token entry: {}", e))?;
     entry.get_password()
         .map_err(|e| format!("Failed to get refresh token: {}", e))

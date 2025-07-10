@@ -7,31 +7,45 @@ export function useChatSocket(channelId: number) {
     const socketRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
-        const access_token = invoke("get_access_token");
-        console.log("ACCESS_TOKEN = ", access_token);
-        console.log("Connecting to WebSocket for channel:", channelId);
-        const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}?token=${access_token}`);
-        socketRef.current = socket;
+        const connectWebSocket = async () => {
+            try {
+                const access_token = await invoke<string>("get_access_token");
+                console.log("ACCESS_TOKEN = ", access_token);
+                console.log("Connecting to WebSocket for channel:", channelId);
+                
+                const encoded_token = encodeURIComponent(access_token);
+                const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}?access_token=${encoded_token}`);
+                socketRef.current = socket;
 
-        socket.onopen = () => {
-            console.log("WebSocket connection established");
+                socket.onopen = () => {
+                    console.log("WebSocket connection established");
+                };
+
+                socket.onmessage = (event) => {
+                    const newMessage: Message = JSON.parse(event.data);
+                    setMessages((prevMessages) => [newMessage, ...prevMessages]);
+                };
+
+                socket.onclose = () => {
+                    console.log("WebSocket connection closed");
+                };
+
+                socket.onerror = (error) => {
+                    console.error("WebSocket error:", error);
+                };
+            } catch (error) {
+                console.error("Failed to get access token:", error);
+            }
         };
 
-        socket.onmessage = (event) => {
-            const newMessage: Message = JSON.parse(event.data);
-            setMessages((prevMessages) => [newMessage, ...prevMessages]);
-        };
+        connectWebSocket();
 
-        socket.onclose = () => {
-            console.log("WebSocket connection closed");
-        }
-        socket.onerror = (error) => {
-            console.error("WebSocket error:", error);
-        };
-
+        // Cleanup function to close WebSocket on unmount
         return () => {
-            socket.close();
-        }
+            if (socketRef.current) {
+                socketRef.current.close();
+            }
+        };
     }, [channelId]);
 
     const sendMessage = (message: Message) => {
