@@ -4,9 +4,13 @@ import { invoke } from "@tauri-apps/api/core";
 
 export function useChatSocket(channelId: number) {
     const [messages, setMessages] = useState<Message[]>([]);
+    const [isConnected, setIsConnected] = useState(false);
     const socketRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
+        if (socketRef.current?.readyState === WebSocket.OPEN) {
+            return;
+        }
         const connectWebSocket = async () => {
             try {
                 const access_token = await invoke<string>("get_access_token");
@@ -19,6 +23,7 @@ export function useChatSocket(channelId: number) {
 
                 socket.onopen = () => {
                     console.log("WebSocket connection established");
+                    setIsConnected(true);
                 };
 
                 socket.onmessage = (event) => {
@@ -28,10 +33,13 @@ export function useChatSocket(channelId: number) {
 
                 socket.onclose = () => {
                     console.log("WebSocket connection closed");
+                    setIsConnected(false);
                 };
 
                 socket.onerror = (error) => {
                     console.error("WebSocket error:", error);
+                    setIsConnected(false);
+
                 };
             } catch (error) {
                 console.error("Failed to get access token:", error);
@@ -43,14 +51,21 @@ export function useChatSocket(channelId: number) {
         // Cleanup function to close WebSocket on unmount
         return () => {
             if (socketRef.current) {
+                console.log("Cleaning up WebSocket connection");
                 socketRef.current.close();
+                socketRef.current = null;
+                setIsConnected(false);
             }
         };
     }, [channelId]);
 
     const sendMessage = (message: Message) => {
-        socketRef.current?.send(JSON.stringify(message));
+        if (socketRef.current?.readyState === WebSocket.OPEN) {
+            socketRef.current.send(JSON.stringify(message));
+        } else {
+            console.warn("WebSocket is not connected");
+        }
     };
 
-    return {messages, sendMessage};
+    return { messages, sendMessage, isConnected };
 }
