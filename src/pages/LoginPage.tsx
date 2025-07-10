@@ -1,5 +1,5 @@
 import "../appearance/LoginPage.css";
-import { Channel } from "../types/Interfaces";
+import { Channel, LoginResponse } from "../types/Interfaces";
 import React from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "react-toastify";
@@ -14,25 +14,26 @@ function LoginPage({ channel }: LoginPageProps) {
     const [password, setPassword] = React.useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault(); // Prevents page reload - also seems to prevent the actual efect of login but also prevents url from containing plain login and password
-        if (username.trim() === "" || password.trim() === "") {
-            toast.warn("Username and password cannot be empty");
-            return;
-        }
-        invoke("login", { username, password })
-            .then((response) => {
-                toast.success("You are logged in as " + username);
-            }
-        )
-        /*
-        // TESTING SOME FEATURES, MAY BE SOME STUPID THINGS HERE
-        window.history.pushState({}, "", "/loggedin"); // Update the URL to reflect the home page after login
-        window.dispatchEvent(new Event("popstate")); // Trigger a popstate event to update the UI if needed
-        window.dispatchEvent(new Event("login")); // Custom event to notify other parts of the app about the login
-        window.dispatchEvent(new Event("userLoggedIn")); // Custom event to notify other parts of the app about the user login
-        window.location.href = "/sent"; // Redirect to home page after login
-        */
-    };
+    e.preventDefault();
+    invoke<LoginResponse>("login", { username, password })
+        .then((response) => {
+            console.log("Login response:", response);
+            toast.success("You are logged in as " + username);
+            
+            // Store tokens and wait for completion
+            return invoke("store_tokens", {
+                accessToken: response.access_token,
+                refreshToken: response.refresh_token
+            });
+        })
+        .then(() => {
+            console.log("Tokens stored successfully");
+        })
+        .catch((error) => {
+            console.error("Error during login/storage process:", error);
+            toast.error("Error: " + error);
+        });
+};
 
     return (
         <div className="login-page">

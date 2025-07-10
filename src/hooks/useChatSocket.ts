@@ -8,6 +8,7 @@ export function useChatSocket(channelId: number) {
 
     useEffect(() => {
         const access_token = invoke("get_access_token");
+        console.log("ACCESS_TOKEN = ", access_token);
         console.log("Connecting to WebSocket for channel:", channelId);
         const socket = new WebSocket(`ws://homecord.itsdinosaur.com/protected/ws/${channelId}?token=${access_token}`);
         socketRef.current = socket;
