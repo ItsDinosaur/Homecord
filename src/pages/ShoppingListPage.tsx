@@ -1,38 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Channel } from "../types/Interfaces";
-import "../appearance/ShoppingList.css";
+import { StyledWrapper } from "../appearance/ShoppingList";
+import AddButton from "../components/AddButton";
+
 
 interface ShoppingPageProps {
   channel: Channel;
 }
 
 function ShoppingListPage( { channel }: ShoppingPageProps) {
+    const [quantity, setQuantity] = React.useState(1);
+    const updateQuantity = (delta: number) => {
+        setQuantity((prev) => Math.max(1, prev + delta));
+    };
     return (
         <div className="shopping-list-page">
             <h1>Grocery List</h1>
-             <div id="checklist">
-                <input id="01" type="checkbox" name="r" value="1" />
-                <label >Bread</label>
-                <input id="02" type="checkbox" name="r" value="2" />
-                <label >Cheese</label>
-                <input id="03" type="checkbox" name="r" value="3" />
-                <label >Coffee</label>
-                <input id="04" type="checkbox" name="r" value="4" />
-                <label >Eggs</label>
-                <input id="05" type="checkbox" name="r" value="5"
-                />
-                <label >Milk</label>
-                <input id="06" type="checkbox" name="r" value="6"
-                />
-                <label >Pasta</label>
-                <input id="07" type="checkbox" name="r" value="7"
-                />
-                <label >Rice</label>
-                <input id="08" type="checkbox" name="r" value="8"
-                />
-                <label >Tomatoes</label>
+            <StyledWrapper>
+                <div id="checklist">
+                    <input name="r" type="checkbox" />
+                    <label >Bread</label>
+                </div>
+            </StyledWrapper>
+
+            <AddButton />
+            <div className='counter'>
+                <button onClick={() => updateQuantity(-1)}>-</button>
+                    <p>{quantity}</p>
+                <button onClick={() => updateQuantity(1)}>+</button>
             </div>
         </div>
+        
     );
 }
 export default ShoppingListPage;
