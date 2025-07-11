@@ -29,6 +29,7 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
             .then(() => {
                 console.log("Tokens stored successfully");
                 connectWebSocket();
+                onLoginSuccess();
             })
             .catch((error) => {
                 console.error("Error during login/storage process:", error);
