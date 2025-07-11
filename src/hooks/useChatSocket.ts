@@ -176,7 +176,7 @@ export function useChatSocket(channelId?: string) {
             
             // Leave channel when component unmounts or channelId changes
             if (isConnected) {
-                wsManager.leaveChannel(channelId);
+                //wsManager.leaveChannel(channelId);
             }
         };
     }, [channelId, isConnected]);
