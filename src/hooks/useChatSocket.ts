@@ -110,8 +110,10 @@ export function useChatSocket(channelId?: string) {
             wsManager.joinChannel(channelId);
         }
 
+        /* WHY TF WE DID IT
         // Clear messages when switching channels
-        setMessages([]);
+        setMessages([]);*/
+        // Clear online users when switching channels
         setOnlineUsers([]);
 
         return () => {

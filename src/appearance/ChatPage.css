@@ -50,6 +50,17 @@
             align-self: flex-start;
         }
     }
+
+    &.system{
+        align-self: center;
+
+        .message-content{
+            background-color: rgba(108, 115, 125, 0.4);
+            align-self: center;
+            font-style: italic;
+            color: #ff5a5a;
+        }
+    }
     
     .message-content {
         width: fit-content;
