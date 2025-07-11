@@ -14,11 +14,15 @@ const channels: Channel[] = [
   { id: 2, name: "Support", type: "text" },
   { id: 3, name: "Voice Chat", type: "voice" },
   { id: 4, name: "Shopping", type: "shopping" },
-  { id: 5, name: "Login", type: "login" },
 ];
 
 function App() {
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
 
   const renderPage = () => {
       if (!currentChannel) return <HomePage />;
@@ -30,12 +34,20 @@ function App() {
           return <VoicePage channel={currentChannel} />;
         case "shopping":
           return <ShoppingListPage channel={currentChannel} />;
-        case "login":
-          return <LoginPage channel={currentChannel} />;
         default:
           return <HomePage />;
       }
     };
+
+  // Show login page if not logged in
+  if (!isLoggedIn) {
+    return (
+      <div className="container">
+        <LoginPage onLoginSuccess={handleLoginSuccess} />
+        <Notification />
+      </div>
+    );
+  }
 
   return (
     <div className="container">

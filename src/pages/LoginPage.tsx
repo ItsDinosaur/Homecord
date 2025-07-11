@@ -5,13 +5,11 @@ import { invoke } from "@tauri-apps/api/core";
 import { toast } from "react-toastify";
 import { useChatSocket } from "../hooks/useChatSocket";
 
-
 interface LoginPageProps {
-  channel: Channel;
+  onLoginSuccess: () => void;
 }
 
-
-function LoginPage({ channel }: LoginPageProps) {
+function LoginPage( { onLoginSuccess }: LoginPageProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const { connectWebSocket } = useChatSocket();
