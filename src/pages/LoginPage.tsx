@@ -12,7 +12,7 @@ interface LoginPageProps {
 function LoginPage( { onLoginSuccess }: LoginPageProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const { connectWebSocket } = useChatSocket();
+    const { connectWebSocket } = useChatSocket(); // This will initialize global listeners
 
     const handleSubmit = (e: React.FormEvent) => {
         //debug
@@ -33,8 +33,12 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
             })
             .then(() => {
                 console.log("Tokens stored successfully");
+                // Connect WebSocket and initialize global listeners
                 connectWebSocket();
                 onLoginSuccess();
+                
+                
+                
             })
             .catch((error) => {
                 console.error("Error during login/storage process:", error);

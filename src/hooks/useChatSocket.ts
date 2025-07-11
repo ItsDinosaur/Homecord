@@ -25,14 +25,32 @@ interface UserLeftMessage {
     timestamp: string;
 }
 
+// Global state for all channel messages (outside component)
+let globalChannelMessages = new Map<string, Message[]>();
+let globalListenersInitialized = false;
+
 export function useChatSocket(channelId?: string) {
-    const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
+    const [messages, setMessages] = useState<Map<string, Message[]>>(globalChannelMessages);
     const [isConnected, setIsConnected] = useState(wsManager.getConnectionStatus());
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+
+    // Initialize global listeners once when first component mounts after login
+    useEffect(() => {
+        if (!globalListenersInitialized && isConnected) {
+            console.log("🌐 Initializing global channel listeners");
+            initializeGlobalListeners();
+            globalListenersInitialized = true;
+        }
+    }, [isConnected]);
 
     useEffect(() => {
         const statusListener = (connected: boolean) => {
             setIsConnected(connected);
+            
+            // Reset global listeners if connection is lost
+            if (!connected) {
+                globalListenersInitialized = false;
+            }
         };
 
         wsManager.addStatusListener(statusListener);
@@ -44,113 +62,98 @@ export function useChatSocket(channelId?: string) {
 
     useEffect(() => {
         if (!channelId) {
-            console.log("No channelId provided, skipping message listener setup");
+            console.log("No channelId provided");
             return;
         }
 
-        console.log(`Setting up message listeners for channel ${channelId}`);
+        console.log(`Setting up for channel ${channelId}`);
 
-        // Chat message listener
-        const chatMessageListener = (data: ChatMessage) => {
-            if (data.channelId === channelId) {
-                console.log(`Received chat message for channel ${channelId}:`, data);
-                const message: Message = {
-                    username: data.username,
-                    content: data.content,
-                    timestamp: data.timestamp
-                };
-                setMessages((prevMessages) => {
-                    const newMessages = new Map(prevMessages);
-                    const currentMessages = newMessages.get(channelId) || [];
-                    newMessages.set(channelId, [message, ...currentMessages]);
-                    return newMessages;
-                });
-            }
-        };
-
-        // User joined listener
-        const userJoinedListener = (data: UserJoinedMessage) => {
-            if (data.channelId === channelId) {
-                console.log(`User ${data.username} joined channel ${channelId}`);
-                setOnlineUsers((prevUsers) => {
-                    if (!prevUsers.includes(data.username)) {
-                        return [...prevUsers, data.username];
-                    }
-                    return prevUsers;
-                });
-                // Optionally add a system message
-                const systemMessage: Message = {
-                    username: "System",
-                    content: `${data.username} joined the channel`,
-                    timestamp: data.timestamp
-                };
-                setMessages((prevMessages) => {
-                    const newMessages = new Map(prevMessages);
-                    const currentMessages = newMessages.get(channelId) || [];
-                    newMessages.set(channelId, [systemMessage, ...currentMessages]);
-                    return newMessages;
-                });
-            }
-        };
-
-        // User left listener
-        const userLeftListener = (data: UserLeftMessage) => {
-            if (data.channelId === channelId) {
-                console.log(`User ${data.username} left channel ${channelId}`);
-                setOnlineUsers((prevUsers) => 
-                    prevUsers.filter(user => user !== data.username)
-                );
-                // Optionally add a system message
-                const systemMessage: Message = {
-                    username: "System",
-                    content: `${data.username} left the channel`,
-                    timestamp: data.timestamp
-                };
-                setMessages((prevMessages) => {
-                    const newMessages = new Map(prevMessages);
-                    const currentMessages = newMessages.get(channelId) || [];
-                    newMessages.set(channelId, [systemMessage, ...currentMessages]);
-                    return newMessages;
-                });
-            }
-        };
-
-        // Add listeners
-        wsManager.addListener("chat", chatMessageListener);
-        wsManager.addListener("user_joined", userJoinedListener);
-        wsManager.addListener("user_left", userLeftListener);
-
-        // Join channel when component mounts
+        // Join channel when component mounts or channelId changes
         if (isConnected) {
             wsManager.joinChannel(channelId);
         }
 
-        
         // Initialize empty messages array for this channel if it doesn't exist
-        setMessages((prevMessages) => {
-            if (!prevMessages.has(channelId)) {
-                const newMessages = new Map(prevMessages);
-                newMessages.set(channelId, []);
-                return newMessages;
-            }
-            return prevMessages;
-        });
+        if (!globalChannelMessages.has(channelId)) {
+            globalChannelMessages.set(channelId, []);
+            // Update local state to reflect global state change
+            setMessages(new Map(globalChannelMessages));
+        }
+
         // Clear online users when switching channels
         setOnlineUsers([]);
 
         return () => {
-            console.log(`Cleaning up message listeners for channel ${channelId}`);
-            //UNCOMMENT IT IF YOU WANT LISTENERS TO BE REMOVED WHEN LIVING CHANNEL
-            //wsManager.removeListener("chat", chatMessageListener);
-            //wsManager.removeListener("user_joined", userJoinedListener);
-            //wsManager.removeListener("user_left", userLeftListener);
+            console.log(`Cleaning up for channel ${channelId}`);
             
-            // Leave channel when component unmounts
+            // Leave channel when component unmounts or channelId changes
             if (isConnected) {
                 wsManager.leaveChannel(channelId);
             }
         };
     }, [channelId, isConnected]);
+
+    const initializeGlobalListeners = () => {
+        // Global chat message listener - receives messages for ALL channels
+        const globalChatMessageListener = (data: ChatMessage) => {
+            console.log(`📨 Received global chat message for channel ${data.channelId}:`, data);
+            const message: Message = {
+                username: data.username,
+                content: data.content,
+                timestamp: data.timestamp
+            };
+            
+            // Add message to the appropriate channel in global state
+            const currentMessages = globalChannelMessages.get(data.channelId) || [];
+            globalChannelMessages.set(data.channelId, [message, ...currentMessages]);
+            
+            // Update all components with new global state
+            setMessages(new Map(globalChannelMessages));
+        };
+
+        // Global user joined listener
+        const globalUserJoinedListener = (data: UserJoinedMessage) => {
+            console.log(`👋 User ${data.username} joined channel ${data.channelId}`);
+            
+            // Add system message to the appropriate channel
+            const systemMessage: Message = {
+                username: "System",
+                content: `${data.username} joined the channel`,
+                timestamp: data.timestamp
+            };
+            
+            const currentMessages = globalChannelMessages.get(data.channelId) || [];
+            globalChannelMessages.set(data.channelId, [systemMessage, ...currentMessages]);
+            
+            // Update all components with new global state
+            setMessages(new Map(globalChannelMessages));
+        };
+
+        // Global user left listener
+        const globalUserLeftListener = (data: UserLeftMessage) => {
+            console.log(`👋 User ${data.username} left channel ${data.channelId}`);
+            
+            // Add system message to the appropriate channel
+            const systemMessage: Message = {
+                username: "System",
+                content: `${data.username} left the channel`,
+                timestamp: data.timestamp
+            };
+            
+            const currentMessages = globalChannelMessages.get(data.channelId) || [];
+            globalChannelMessages.set(data.channelId, [systemMessage, ...currentMessages]);
+            
+            // Update all components with new global state
+            setMessages(new Map(globalChannelMessages));
+        };
+
+        // Add global listeners - these will persist across channel switches
+        wsManager.addListener("chat", globalChatMessageListener);
+        wsManager.addListener("user_joined", globalUserJoinedListener);
+        wsManager.addListener("user_left", globalUserLeftListener);
+
+        console.log("✅ Global listeners initialized");
+    };
 
     const connectWebSocket = async () => {
         await wsManager.connectWebSocket();
@@ -158,6 +161,10 @@ export function useChatSocket(channelId?: string) {
 
     const disconnectWebSocket = () => {
         wsManager.disconnectWebSocket();
+        // Reset global state on disconnect
+        globalChannelMessages.clear();
+        globalListenersInitialized = false;
+        setMessages(new Map());
     };
 
     const sendMessage = (message: Message) => {
@@ -179,12 +186,28 @@ export function useChatSocket(channelId?: string) {
     // Get messages for the current channel
     const getCurrentChannelMessages = (): Message[] => {
         if (!channelId) return [];
-        return messages.get(channelId) || [];
+        return globalChannelMessages.get(channelId) || [];
+    };
+
+    // Get all channel messages (for debugging)
+    const getAllChannelMessages = (): Map<string, Message[]> => {
+        return new Map(globalChannelMessages);
+    };
+
+    // Get message counts for all channels
+    const getChannelMessageCounts = (): Record<string, number> => {
+        const counts: Record<string, number> = {};
+        globalChannelMessages.forEach((messages, channelId) => {
+            counts[channelId] = messages.length;
+        });
+        return counts;
     };
 
     return { 
         isConnected, 
-        messages: getCurrentChannelMessages(), 
+        messages: getCurrentChannelMessages(), // Only current channel messages
+        allChannelMessages: getAllChannelMessages(), // All channel messages for debugging
+        channelMessageCounts: getChannelMessageCounts(), // Message counts per channel
         onlineUsers,
         connectWebSocket, 
         disconnectWebSocket, 
