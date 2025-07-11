@@ -26,7 +26,7 @@ interface UserLeftMessage {
 }
 
 export function useChatSocket(channelId?: string) {
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
     const [isConnected, setIsConnected] = useState(wsManager.getConnectionStatus());
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
@@ -59,7 +59,12 @@ export function useChatSocket(channelId?: string) {
                     content: data.content,
                     timestamp: data.timestamp
                 };
-                setMessages((prevMessages) => [message, ...prevMessages]);
+                setMessages((prevMessages) => {
+                    const newMessages = new Map(prevMessages);
+                    const currentMessages = newMessages.get(channelId) || [];
+                    newMessages.set(channelId, [message, ...currentMessages]);
+                    return newMessages;
+                });
             }
         };
 
@@ -79,7 +84,12 @@ export function useChatSocket(channelId?: string) {
                     content: `${data.username} joined the channel`,
                     timestamp: data.timestamp
                 };
-                setMessages((prevMessages) => [systemMessage, ...prevMessages]);
+                setMessages((prevMessages) => {
+                    const newMessages = new Map(prevMessages);
+                    const currentMessages = newMessages.get(channelId) || [];
+                    newMessages.set(channelId, [systemMessage, ...currentMessages]);
+                    return newMessages;
+                });
             }
         };
 
@@ -96,7 +106,12 @@ export function useChatSocket(channelId?: string) {
                     content: `${data.username} left the channel`,
                     timestamp: data.timestamp
                 };
-                setMessages((prevMessages) => [systemMessage, ...prevMessages]);
+                setMessages((prevMessages) => {
+                    const newMessages = new Map(prevMessages);
+                    const currentMessages = newMessages.get(channelId) || [];
+                    newMessages.set(channelId, [systemMessage, ...currentMessages]);
+                    return newMessages;
+                });
             }
         };
 
@@ -110,9 +125,16 @@ export function useChatSocket(channelId?: string) {
             wsManager.joinChannel(channelId);
         }
 
-        /* WHY TF WE DID IT
-        // Clear messages when switching channels
-        setMessages([]);*/
+        
+        // Initialize empty messages array for this channel if it doesn't exist
+        setMessages((prevMessages) => {
+            if (!prevMessages.has(channelId)) {
+                const newMessages = new Map(prevMessages);
+                newMessages.set(channelId, []);
+                return newMessages;
+            }
+            return prevMessages;
+        });
         // Clear online users when switching channels
         setOnlineUsers([]);
 
@@ -153,9 +175,15 @@ export function useChatSocket(channelId?: string) {
         wsManager.leaveChannel(channelIdToLeave);
     };
 
+    // Get messages for the current channel
+    const getCurrentChannelMessages = (): Message[] => {
+        if (!channelId) return [];
+        return messages.get(channelId) || [];
+    };
+
     return { 
         isConnected, 
-        messages, 
+        messages: getCurrentChannelMessages(), 
         onlineUsers,
         connectWebSocket, 
         disconnectWebSocket, 
