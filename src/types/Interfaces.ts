@@ -1,6 +1,6 @@
 
 export interface Channel {
-    id: number;
+    id: string;
     name: string;
     type: "text" | "voice" | "shopping" | "login";
 }

@@ -1,20 +1,37 @@
 import { invoke } from "@tauri-apps/api/core";
 import { Message } from "../types/Interfaces";
 
-interface ChannelMessage extends Message {
-    channelId: number;
+interface WebSocketMessage {
+    type: string;
+    [key: string]: any;
 }
 
-interface IncomingMessage {
-  type: string;
-  operation: string;
-  data: any;
+interface ChatMessage {
+    type: "chat";
+    content: string;
+    username: string;
+    channelId: string;
+    timestamp: string;
+}
+
+interface UserJoinedMessage {
+    type: "user_joined";
+    username: string;
+    channelId: string;
+    timestamp: string;
+}
+
+interface UserLeftMessage {
+    type: "user_left";
+    username: string;
+    channelId: string;
+    timestamp: string;
 }
 
 class WebSocketManager {
     private socket: WebSocket | null = null;
     private isConnected: boolean = false;
-    private messageListeners: Map<number, ((message: Message) => void)[]> = new Map();
+    private listeners: Map<string, ((data: any) => void)[]> = new Map();
     private statusListeners: ((connected: boolean) => void)[] = [];
 
     async connectWebSocket(): Promise<void> {
@@ -59,30 +76,7 @@ class WebSocketManager {
 
             this.socket.onmessage = (event) => {
                 if (cancelled) return;
-                console.log("📨 Received raw message:", event.data);
-                
-                try {
-                    const receivedMessage: ChannelMessage = JSON.parse(event.data);
-                    console.log("📨 Parsed message:", receivedMessage);
-                    console.log("📨 Message for channel:", receivedMessage.channelId);
-                    
-                    // Notify listeners for the specific channel
-                    this.notifyChannelMessageListeners(receivedMessage.channelId, receivedMessage);
-                } catch (error) {
-                    console.error("❌ Failed to parse message:", error);
-                    console.error("❌ Raw data:", event.data);
-                }
-                /*
-                const msg: IncomingMessage = JSON.parse(event.data);
-                switch (msg.type) {
-                    case "chat":
-                        this.handleChatOperation(msg.operation, msg.data);
-                        break;
-                    default:
-                        console.warn("Unknown message type:", msg.type);
-                        break;
-                }
-                */
+                this.handleMessage(event);
             };
 
             this.socket.onclose = (event) => {
@@ -104,61 +98,107 @@ class WebSocketManager {
         }
     }
 
-    disconnectWebSocket(): void {
-        if(this.socket) {
-            this.socket.close();
+    // Handle incoming messages based on type
+    private handleMessage(event: MessageEvent): void {
+        console.log("📨 Received raw message:", event.data);
+        
+        try {
+            const data: WebSocketMessage = JSON.parse(event.data);
+            console.log("📨 Parsed message:", data);
+            console.log("📨 Message type:", data.type);
+            
+            const listeners = this.listeners.get(data.type) || [];
+            console.log(`📢 Notifying ${listeners.length} listeners for type '${data.type}'`);
+            
+            listeners.forEach(callback => callback(data));
+        } catch (error) {
+            console.error("❌ Failed to parse message:", error);
+            console.error("❌ Raw data:", event.data);
         }
-        this.isConnected = false;
-        this.notifyStatusListeners(false);
     }
 
-    sendMessage(message: Message, channelId: number): void {
-        console.log("🚀 Attempting to send message:", message, "to channel:", channelId);
-        console.log("🚀 WebSocket readyState:", this.socket?.readyState);
-        
+    // Register listeners for specific message types
+    addListener(messageType: string, callback: (data: any) => void): void {
+        if (!this.listeners.has(messageType)) {
+            this.listeners.set(messageType, []);
+        }
+        this.listeners.get(messageType)!.push(callback);
+        console.log(`Added listener for type '${messageType}'. Total listeners: ${this.listeners.get(messageType)!.length}`);
+    }
+
+    removeListener(messageType: string, callback: (data: any) => void): void {
+        const listeners = this.listeners.get(messageType);
+        if (listeners) {
+            const filtered = listeners.filter(l => l !== callback);
+            if (filtered.length === 0) {
+                this.listeners.delete(messageType);
+                console.log(`Removed all listeners for type '${messageType}'`);
+            } else {
+                this.listeners.set(messageType, filtered);
+                console.log(`Removed listener for type '${messageType}'. Remaining: ${filtered.length}`);
+            }
+        }
+    }
+
+    // Send generic message
+    private send(message: any): void {
         if (this.socket?.readyState === WebSocket.OPEN) {
-            const channelMessage: ChannelMessage = {
-                ...message,
-                channelId: channelId
-            };
-            
-            const messageStr = JSON.stringify(channelMessage);
-            console.log("🚀 Sending JSON string:", messageStr);
+            const messageStr = JSON.stringify(message);
+            console.log("🚀 Sending message:", messageStr);
             this.socket.send(messageStr);
-            console.log("✅ Message sent successfully to channel", channelId);
+            console.log("✅ Message sent successfully");
         } else {
             console.warn("❌ WebSocket is not connected");
             console.log("Current readyState:", this.socket?.readyState);
         }
     }
 
+    // Specific message type methods
+    joinChannel(channelId: string): void {
+        console.log(`🔗 Joining channel ${channelId}`);
+        this.send({
+            type: "join",
+            channelId: channelId
+        });
+    }
+
+    leaveChannel(channelId: string): void {
+        console.log(`🚪 Leaving channel ${channelId}`);
+        this.send({
+            type: "leave",
+            channelId: channelId
+        });
+    }
+
+    sendChatMessage(content: string, channelId: string, username: string): void {
+        console.log(`💬 Sending chat message to channel ${channelId}`);
+        this.send({
+            type: "chat",
+            content: content,
+            channelId: channelId,
+            username: username,
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    // Legacy method for backward compatibility
+    sendMessage(message: Message, channelId: string): void {
+        this.sendChatMessage(message.content, channelId, message.username);
+    }
+
+    disconnectWebSocket(): void {
+        if (this.socket) {
+            this.socket.close();
+        }
+        this.isConnected = false;
+        this.notifyStatusListeners(false);
+    }
+
     getConnectionStatus(): boolean {
         return this.isConnected;
     }
 
-    // Channel-specific listener management
-    addChannelMessageListener(channelId: number, listener: (message: Message) => void): void {
-        if (!this.messageListeners.has(channelId)) {
-            this.messageListeners.set(channelId, []);
-        }
-        this.messageListeners.get(channelId)!.push(listener);
-        console.log(`Added listener for channel ${channelId}. Total listeners: ${this.messageListeners.get(channelId)!.length}`);
-    }
-
-    removeChannelMessageListener(channelId: number, listener: (message: Message) => void): void {
-        const listeners = this.messageListeners.get(channelId);
-        if (listeners) {
-            const filtered = listeners.filter(l => l !== listener);
-            if (filtered.length === 0) {
-                this.messageListeners.delete(channelId);
-                console.log(`Removed all listeners for channel ${channelId}`);
-            } else {
-                this.messageListeners.set(channelId, filtered);
-                console.log(`Removed listener for channel ${channelId}. Remaining: ${filtered.length}`);
-            }
-        }
-    }
-
+    // Status listener management
     addStatusListener(listener: (connected: boolean) => void): void {
         this.statusListeners.push(listener);
     }
@@ -167,41 +207,18 @@ class WebSocketManager {
         this.statusListeners = this.statusListeners.filter(l => l !== listener);
     }
 
-    private notifyChannelMessageListeners(channelId: number, message: Message): void {
-        const listeners = this.messageListeners.get(channelId);
-        if (listeners && listeners.length > 0) {
-            console.log(`📢 Notifying ${listeners.length} listeners for channel ${channelId}`);
-            listeners.forEach(listener => listener(message));
-        } else {
-            console.log(`📢 No listeners found for channel ${channelId}`);
-        }
-    }
-
     private notifyStatusListeners(connected: boolean): void {
         this.statusListeners.forEach(listener => listener(connected));
     }
 
     // Debug method to see current listeners
-    getChannelListenerCounts(): Record<number, number> {
-        const counts: Record<number, number> = {};
-        this.messageListeners.forEach((listeners, channelId) => {
-            counts[channelId] = listeners.length;
+    getListenerCounts(): Record<string, number> {
+        const counts: Record<string, number> = {};
+        this.listeners.forEach((listeners, type) => {
+            counts[type] = listeners.length;
         });
         return counts;
     }
-
-    handleChatOperation(operation: string, data: any) {
-    if (operation === "send") {
-        //change to type of Message
-        const message: ChannelMessage = data;
-        const channelId = message.channelId;
-        this.notifyChannelMessageListeners(channelId, message);
-    } else if (operation === "delete") {
-        // Remove message from state
-        }
-    }
-
 }
-
 
 export const wsManager = new WebSocketManager();

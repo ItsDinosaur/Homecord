@@ -10,10 +10,10 @@ import LoginPage from "./pages/LoginPage.tsx";
 import Notification from "./components/Notification.tsx";
 
 const channels: Channel[] = [
-  { id: 1, name: "General", type: "text" },
-  { id: 2, name: "Support", type: "text" },
-  { id: 3, name: "Voice Chat", type: "voice" },
-  { id: 4, name: "Shopping", type: "shopping" },
+  { id: "1", name: "General", type: "text" },
+  { id: "2", name: "Support", type: "text" },
+  { id: "3", name: "Voice Chat", type: "voice" },
+  { id: "4", name: "Shopping", type: "shopping" },
 ];
 
 function App() {
