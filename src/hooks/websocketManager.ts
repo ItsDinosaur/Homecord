@@ -5,6 +5,12 @@ interface ChannelMessage extends Message {
     channelId: number;
 }
 
+interface IncomingMessage {
+  type: string;
+  operation: string;
+  data: any;
+}
+
 class WebSocketManager {
     private socket: WebSocket | null = null;
     private isConnected: boolean = false;
@@ -66,6 +72,17 @@ class WebSocketManager {
                     console.error("❌ Failed to parse message:", error);
                     console.error("❌ Raw data:", event.data);
                 }
+                /*
+                const msg: IncomingMessage = JSON.parse(event.data);
+                switch (msg.type) {
+                    case "chat":
+                        this.handleChatOperation(msg.operation, msg.data);
+                        break;
+                    default:
+                        console.warn("Unknown message type:", msg.type);
+                        break;
+                }
+                */
             };
 
             this.socket.onclose = (event) => {
@@ -172,6 +189,19 @@ class WebSocketManager {
         });
         return counts;
     }
+
+    handleChatOperation(operation: string, data: any) {
+    if (operation === "send") {
+        //change to type of Message
+        const message: ChannelMessage = data;
+        const channelId = message.channelId;
+        this.notifyChannelMessageListeners(channelId, message);
+    } else if (operation === "delete") {
+        // Remove message from state
+        }
+    }
+
 }
+
 
 export const wsManager = new WebSocketManager();
