@@ -17,11 +17,14 @@ const channels: Channel[] = [
 ];
 
 function App() {
+  //const [channels, setChannels] = useState<Channel[]>([]);
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
+    //fetchChannels 
+    
   };
 
   const renderPage = () => {
