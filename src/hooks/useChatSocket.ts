@@ -140,13 +140,14 @@ export function useChatSocket(channelId?: string) {
 
         return () => {
             console.log(`Cleaning up message listeners for channel ${channelId}`);
+            //UNCOMMENT IT IF YOU WANT LISTENERS TO BE REMOVED WHEN LIVING CHANNEL
             //wsManager.removeListener("chat", chatMessageListener);
             //wsManager.removeListener("user_joined", userJoinedListener);
             //wsManager.removeListener("user_left", userLeftListener);
             
             // Leave channel when component unmounts
             if (isConnected) {
-                //wsManager.leaveChannel(channelId);
+                wsManager.leaveChannel(channelId);
             }
         };
     }, [channelId, isConnected]);
