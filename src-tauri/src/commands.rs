@@ -1,25 +1,9 @@
-/*
-use tauri::State;
-use sqlx::posrgress::PGPool;
-
-use crate::db::loginHandler;
-
-#[tauri::command]
-pub async fn login(
-    state: State<'_, PGPool>,
-    username: String,
-    password: String,
-) -> Result<bool, String> {
-    match loginHandler::login_handler(&state, username, password).await {
-        Ok(exists) => Ok(exists),
-        Err(e) => Err(format!("Login failed: {}", e)),
-    }
-}
-*/
 use crate::user::encryption::hash;
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
 use keyring::Entry;
+use urlencoding::encode as encodeURIComponent;
+
 
 #[derive(Serialize)]
 struct LoginPayload {
@@ -85,15 +69,6 @@ pub async fn store_tokens(accessToken: String, refreshToken: String) -> Result<(
     Ok(())
 }
 
-/* 
-#[tauri::command]
-pub async fn get_access_token() -> Result<String, String> {
-    let entry = Entry::new("homecord", "accessToken")
-        .map_err(|e| format!("Failed to create entry: {}", e))?;
-    entry.get_password()
-        .map_err(|e| format!("Failed to get access token: {}", e))
-}
-        */
 #[tauri::command]
 pub async fn get_access_token() -> Result<String, String> {
     eprintln!("Attempting to retrieve access token...");
@@ -121,4 +96,55 @@ pub async fn get_refresh_token() -> Result<String, String> {
         .map_err(|e| format!("Failed to create refresh token entry: {}", e))?;
     entry.get_password()
         .map_err(|e| format!("Failed to get refresh token: {}", e))
+}
+
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Channel {
+    channel_id: String,
+    room_id: String,
+    channel_name: String,
+    description: Option<String>,
+    channel_type: String,
+    position: i32,
+}
+#[tauri::command]
+pub async fn fetchChannels(room_id: String) -> Result<Vec<Channel>, String> {
+    let client = Client::new();
+    let access_token = get_access_token()
+        .await
+        .unwrap_or_else(|e| {
+            eprintln!("Error retrieving access token: {}", e);
+            String::new()
+        });
+
+    let url = "http://homecord.itsdinosaur.com/protected/channels/";
+    let payload = serde_json::json!({
+            "room_id": room_id,
+        });
+
+    let response = client
+        .post(url)
+        .bearer_auth(access_token)
+        .json(&payload)
+        .send()
+        .await
+        .map_err(|e| format!("Request failed: {}", e))?;
+    
+    if response.status().is_success() {
+        eprintln!("Channels fetched successfully");
+        let channels: Vec<Channel> = response
+            .json()
+            .await
+            .map_err(|e| format!("Failed to parse response: {}", e))?;
+        Ok(channels)
+    } else {
+        eprintln!("Failed to fetch channels with status: {}", response.status());
+        let error_message = response
+            .text()
+            .await
+            .unwrap_or_else(|_| "Unknown error".to_string());
+        Err(format!("Failed to fetch channels: {}", error_message))
+    }
+    
 }

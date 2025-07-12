@@ -23,13 +23,13 @@ function ChannelElement({ channel }: { channel: Channel }) {
     return (
         <div className="channel-item" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <a className="channel-name">
-                {channel.type === 'text' && <img src={hashtagChannelIcon} className="channel-icon hashtag" alt="Text Channel Icon" />}
-                {channel.type === 'voice' && <img src={volumeUpIcon} className="channel-icon volume-up" alt="Voice Channel Icon" />}
-                {channel.type === 'shopping' && <img src={shoppingCartIcon} className="channel-icon shopping-cart" alt="Shopping Channel Icon" />}
-                {channel.type === 'login' && <img src={loginIcon} className="channel-icon login" alt="Login Icon" />}
-                <b>{channel.name.length>=12 ? channel.name.slice(0,10)+"..." : channel.name}</b>
+                {channel.channel_type === 'text' && <img src={hashtagChannelIcon} className="channel-icon hashtag" alt="Text Channel Icon" />}
+                {channel.channel_type === 'voice' && <img src={volumeUpIcon} className="channel-icon volume-up" alt="Voice Channel Icon" />}
+                {channel.channel_type === 'shopping' && <img src={shoppingCartIcon} className="channel-icon shopping-cart" alt="Shopping Channel Icon" />}
+                {channel.channel_type === 'login' && <img src={loginIcon} className="channel-icon login" alt="Login Icon" />}
+                <b>{channel.channel_name.length>=12 ? channel.channel_name.slice(0,10)+"..." : channel.channel_name}</b>
             </a>
-            {showFullName && <div className="full-name">{channel.name}</div>}
+            {showFullName && <div className="full-name">{channel.channel_name}</div>}
         </div>
     );
 }

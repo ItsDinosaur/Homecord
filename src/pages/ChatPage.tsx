@@ -19,7 +19,7 @@ function ChatPage({ channel }: ChatPageProps) {
         sendMessage, 
         isConnected, 
         listenerCounts 
-    } = useChatSocket(channel.id);
+    } = useChatSocket(channel.channel_id);
     const [input, setInput] = useState("");
 
     const handleSend = () => {
@@ -43,14 +43,14 @@ function ChatPage({ channel }: ChatPageProps) {
     return (
         <div className="chat-page">
             <div className="chat-header">
-                <h1>{channel.name} {!isConnected && "(Disconnected)"}</h1>
+                <h1>{channel.channel_name} {!isConnected && "(Disconnected)"}</h1>
                 <div className="online-users">
                     Online: {onlineUsers.join(", ")} ({onlineUsers.length})
                 </div>
             </div>
             
             <div className="debug-info">
-                Channel ID: {channel.id} | 
+                Channel ID: {channel.channel_id} | 
                 Chat Listeners: {listenerCounts.chat || 0} | 
                 Join Listeners: {listenerCounts.user_joined || 0} | 
                 Leave Listeners: {listenerCounts.user_left || 0}

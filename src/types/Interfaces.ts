@@ -1,8 +1,11 @@
 
 export interface Channel {
-    id: string;
-    name: string;
-    type: "text" | "voice" | "shopping" | "login";
+    channel_id: string,
+    room_id: string,
+    channel_name: string,
+    description: string,
+    channel_type: string,
+    position: number,
 }
 export interface Message {
     username: string;
