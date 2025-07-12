@@ -12,6 +12,7 @@ interface SidebarProps {
   channels: Channel[];
   onSelectChannel: (channel: Channel) => void;
   onLogout?: () => void;
+  onOpenSettings?: () => void; // Add this prop
   username?: string;
 }
 
@@ -27,7 +28,7 @@ const renderChannel = (channel: Channel,
 
 
 
-export function Sidebar({ channels, onSelectChannel, onLogout, username = "User" }: SidebarProps) {
+export function Sidebar({ channels, onSelectChannel, onLogout, onOpenSettings, username = "User" }: SidebarProps) {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
     const handleProfileClick = () => {
@@ -47,8 +48,9 @@ export function Sidebar({ channels, onSelectChannel, onLogout, username = "User"
 
     const handleSettings = () => {
         setIsUserMenuOpen(false);
-        // Handle settings click
-        console.log("Settings clicked");
+        if (onOpenSettings) {
+            onOpenSettings(); // Call the settings handler from App.tsx
+        }
     };
 
     return (

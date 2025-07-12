@@ -1,34 +1,90 @@
-import exampleReactIcon from "../assets/react.svg"
-import "../appearance/UserProfilePage.css"
-import List from "../types/List";
-import { userOption } from "../types/Interfaces";
+// pages/UserProfilePage.tsx
+import React, { useState } from 'react';
+import '../appearance/UserProfilePage.css';
 
-interface UserOptionsProps {
-  userOptions: userOption[];
+interface UserProfilePageProps {
+    username: string;
+    onBack: () => void;
 }
 
-const renderUserOptions = (userOption: userOption) => {
-    return (
-        <div onClick={() => onSelectChannel(channel)}>
-            <ChannelElement channel={channel} />
-        </div>
-    );
-};
+export default function UserProfilePage({ username, onBack }: UserProfilePageProps) {
+    const [displayName, setDisplayName] = useState(username);
+    const [email, setEmail] = useState('user@example.com');
+    const [status, setStatus] = useState('online');
 
-function UserProfilePage({ userOptions }: UserOptionsProps) {
+    const handleSave = () => {
+        console.log('Saving profile changes:', { displayName, email, status });
+        // Add your save logic here
+    };
+
     return (
         <div className="user-profile-page">
-            <div className="user-profile-header">
-                <img src={exampleReactIcon} className="user-profile-page-icon" alt="User Profile Page Icon" />            
-                Username: user
+            <div className="profile-header">
+                <button className="back-button" onClick={onBack}>
+                    ← Back
+                </button>
+                <h1>User Settings</h1>
             </div>
-            <div className="user-profile-info">
-                <List
-                    items={userOptions} 
-                    renderItem={(userOptions) => renderUserOptions(userOptions)}
-                />
+            
+            <div className="profile-content">
+                <div className="profile-section">
+                    <h2>Profile Information</h2>
+                    <div className="form-group">
+                        <label htmlFor="displayName">Display Name</label>
+                        <input
+                            id="displayName"
+                            type="text"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="status">Status</label>
+                        <select
+                            id="status"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="online">Online</option>
+                            <option value="away">Away</option>
+                            <option value="busy">Busy</option>
+                            <option value="invisible">Invisible</option>
+                        </select>
+                    </div>
+                    
+                    <button className="save-button" onClick={handleSave}>
+                        Save Changes
+                    </button>
+                </div>
+                
+                <div className="profile-section">
+                    <h2>Appearance</h2>
+                    <div className="form-group">
+                        <label>Theme</label>
+                        <div className="theme-options">
+                            <label>
+                                <input type="radio" name="theme" value="dark" defaultChecked />
+                                Dark
+                            </label>
+                            <label>
+                                <input type="radio" name="theme" value="light" />
+                                Light
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
-export default UserProfilePage;

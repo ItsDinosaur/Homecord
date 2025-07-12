@@ -12,21 +12,16 @@ import UserProfilePage from "./pages/UserProfilePage.tsx";
 
 import { invoke } from "@tauri-apps/api/core";
 
-/*
-const channels: Channel[] = [
-  { id: "1", name: "General", type: "text" },
-  { id: "2", name: "Support", type: "text" },
-  { id: "3", name: "Voice Chat", type: "voice" },
-  { id: "4", name: "Shopping", type: "shopping" },
-];
-*/
+type CurrentView = 'home' | 'profile' | 'channel';
 
 function App() {
   //for now hardcoded room_id
   const roomId = "9e67ea3e-6910-4c5e-9507-d0b9b1238d92";
   const [channels, setChannels] = useState<Channel[]>([]);
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
+  const [currentView, setCurrentView] = useState<CurrentView>('home'); // Add view state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("User"); // Store username
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
@@ -42,20 +37,60 @@ function App() {
       });
   };
 
-  const renderPage = () => {
-      if (!currentChannel) return <HomePage />;
+  const handleSelectChannel = (channel: Channel) => {
+    setCurrentChannel(channel);
+    setCurrentView('channel'); // Set view to channel when selecting a channel
+  };
 
-      switch (currentChannel.channel_type) {
-        case "text":
-          return <ChatPage channel={currentChannel} />;
-        case "voice":
-          return <VoicePage channel={currentChannel} />;
-        case "shopping":
-          return <ShoppingListPage channel={currentChannel} />;
-        default:
+  const handleOpenSettings = () => {
+    setCurrentView('profile'); // Switch to profile view
+  };
+
+  const handleBackToChat = () => {
+    if (currentChannel) {
+      setCurrentView('channel'); // Go back to current channel
+    } else {
+      setCurrentView('home'); // Go to home if no channel selected
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentChannel(null);
+    setCurrentView('home');
+    setUsername("User");
+    // Add any other logout logic here
+  };
+
+  const renderPage = () => {
+    // Handle different views
+    switch (currentView) {
+      case 'profile':
+        return <UserProfilePage username={username} onBack={handleBackToChat} />;
+      
+      case 'channel':
+        if (!currentChannel) {
+          setCurrentView('home'); // Fallback to home if no channel
           return <HomePage />;
-      }
-    };
+        }
+        
+        // Render channel-specific pages
+        switch (currentChannel.channel_type) {
+          case "text":
+            return <ChatPage channel={currentChannel} />;
+          case "voice":
+            return <VoicePage channel={currentChannel} />;
+          case "shopping":
+            return <ShoppingListPage channel={currentChannel} />;
+          default:
+            return <HomePage />;
+        }
+      
+      case 'home':
+      default:
+        return <HomePage />;
+    }
+  };
 
   // Show login page if not logged in
   if (!isLoggedIn) {
@@ -70,14 +105,15 @@ function App() {
   return (
     <div className="container">
       <Sidebar 
-        channels={channels} onSelectChannel={setCurrentChannel}
-        /*onSelectChannel={handleSelectChannel}      MOŻNABY EWENTUALNIE TAK ROBIĆ ZMIANE STRON NA SELECT CHANNEL*/
-        //onLogout={handleLogout}
-        username="User" // Replace with actual username
+        channels={channels} 
+        onSelectChannel={handleSelectChannel} // Use the new handler
+        onLogout={handleLogout} // Add logout handler
+        onOpenSettings={handleOpenSettings} // Add settings handler
+        username={username} // Pass actual username
       />
       
       <div className="content">
-      {renderPage()}
+        {renderPage()}
       </div>
       <Notification />
     </div>
