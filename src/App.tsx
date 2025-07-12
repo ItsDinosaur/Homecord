@@ -8,6 +8,7 @@ import ShoppingListPage from "./pages/ShoppingListPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import Notification from "./components/Notification.tsx";
+import UserProfilePage from "./pages/UserProfilePage.tsx";
 
 import { invoke } from "@tauri-apps/api/core";
 
@@ -68,7 +69,12 @@ function App() {
 
   return (
     <div className="container">
-      <Sidebar channels={channels} onSelectChannel={setCurrentChannel}/>
+      <Sidebar 
+        channels={channels} onSelectChannel={setCurrentChannel}
+        /*onSelectChannel={handleSelectChannel}      MOŻNABY EWENTUALNIE TAK ROBIĆ ZMIANE STRON NA SELECT CHANNEL*/
+        //onLogout={handleLogout}
+        username="User" // Replace with actual username
+      />
       
       <div className="content">
       {renderPage()}

@@ -3,11 +3,11 @@
     width: 150px;
     height: 100vh;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible; /* Change from auto/hidden to visible */
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    z-index: 100; /* Add z-index to establish stacking context */
 }
 
 .nav-links {
@@ -71,13 +71,16 @@ ul {
 .sidebar-footer {
     margin-top: auto;
     width: 100%;
-    height: 75px;
+    height: 70px;
     text-align: center;
     background-color: inherit;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-size: x-small;
+    overflow: visible; /* Allow overflow */
+    position: relative; /* For proper positioning context */
 }
 
 .add-channel-button{
@@ -104,4 +107,51 @@ ul {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+/* Update the user-profile-container to use flexbox */
+.user-profile-container {
+    position: relative;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    overflow: visible; /* Allow overflow */
+}
+
+/* Keep your existing circular button styles */
+.user-profile-button {
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    background-color: transparent;
+    border: 2px solid rgba(199, 193, 193, 0.979);
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;         /* Prevent button from shrinking */
+    margin-left: 10px;
+}
+
+.user-profile-button:hover {
+    background-color: rgba(63, 63, 63, 0.5);
+}
+
+.user-profile-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+/* Add styles for the username display */
+.username-display {
+    color: white;
+    font-size: 20px;        /* Bigger text size */
+    font-weight: 600;       /* Make it bold */
+    white-space: nowrap;    /* Keep text on one line */
+    overflow: hidden;       /* Hide overflow */
+    text-overflow: ellipsis; /* Add ... for long names */
+    flex: 1;               /* Take remaining space */
 }

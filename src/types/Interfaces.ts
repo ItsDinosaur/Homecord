@@ -7,6 +7,11 @@ export interface Channel {
     channel_type: string,
     position: number,
 }
+
+export interface userOption {
+    
+}
+
 export interface Message {
     username: string;
     content: string;
