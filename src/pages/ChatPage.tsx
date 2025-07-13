@@ -4,6 +4,7 @@ import "../appearance/ChatPage.css";
 import { useChatSocket } from "../hooks/useChatSocket";
 import { Message } from "../types/Interfaces";
 import { MarkdownRenderer } from "../components/MarkdownRenderer";
+import ReactMarkdown from "react-markdown";
 
 interface ChatPageProps {
   channel: Channel;
@@ -11,6 +12,8 @@ interface ChatPageProps {
 
 function ChatPage({ channel }: ChatPageProps) {
     const endRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const previewRef = useRef<HTMLDivElement>(null);
     const { 
         messages, 
         onlineUsers, 
@@ -19,6 +22,7 @@ function ChatPage({ channel }: ChatPageProps) {
         listenerCounts 
     } = useChatSocket(channel.channel_id);
     const [input, setInput] = useState("");
+    const [showPreview, setShowPreview] = useState(false);
 
     const handleSend = () => {
         if (!input.trim()) return;
@@ -32,7 +36,36 @@ function ChatPage({ channel }: ChatPageProps) {
         console.log("Sending message:", newMessage);
         sendMessage(newMessage);
         setInput("");
+        setShowPreview(false);
     };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value;
+        setInput(value);
+        // Show preview if markdown syntax is detected
+        setShowPreview(/[*_~`#\[\]|>-]/.test(value) && value.trim().length > 0);
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    };
+
+    const handleScroll = () => {
+        if (textareaRef.current && previewRef.current) {
+            previewRef.current.scrollTop = textareaRef.current.scrollTop;
+        }
+    };
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            const textarea = textareaRef.current;
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+    }, [input]);
 
     useEffect(() => {
         endRef.current?.scrollTo({ top: endRef.current.scrollHeight, behavior: "smooth" });
@@ -55,6 +88,7 @@ function ChatPage({ channel }: ChatPageProps) {
             </div>
             
             <div className="chat-content" ref={endRef}>
+
                 {[...messages].reverse().map((message, index) => (
                     <div 
                         key={index} 
@@ -76,20 +110,51 @@ function ChatPage({ channel }: ChatPageProps) {
                 ))}
                 
             </div>
+            {/* Floating preview positioned over chat content */}
+                {showPreview && (
+                    <div className="floating-preview">
+                        <div className="preview-header">
+                            <span className="preview-label">Preview</span>
+                            <button 
+                                className="preview-close"
+                                onClick={() => setShowPreview(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="preview-content">
+                            <ReactMarkdown
+                                components={{
+                                    p: ({ children }) => <p className="preview-paragraph">{children}</p>,
+                                    strong: ({ children }) => <strong className="preview-bold">{children}</strong>,
+                                    em: ({ children }) => <em className="preview-italic">{children}</em>,
+                                    code: ({ children }) => <code className="preview-inline-code">{children}</code>,
+                                    pre: ({ children }) => <pre className="preview-code-block">{children}</pre>,
+                                    blockquote: ({ children }) => <blockquote className="preview-quote">{children}</blockquote>,
+                                    ul: ({ children }) => <ul className="preview-list">{children}</ul>,
+                                    ol: ({ children }) => <ol className="preview-list">{children}</ol>,
+                                    h1: ({ children }) => <h1 className="preview-h1">{children}</h1>,
+                                    h2: ({ children }) => <h2 className="preview-h2">{children}</h2>,
+                                    h3: ({ children }) => <h3 className="preview-h3">{children}</h3>,
+                                }}
+                            >
+                                {input}
+                            </ReactMarkdown>
+                        </div>
+                    </div>
+                )}
             
-            <div className="message-input-container">
-                <textarea
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type a message..."
-                    disabled={!isConnected}
-                />
-                <button 
-                    onClick={handleSend} 
-                    disabled={!isConnected || !input.trim()}
-                >
-                    Send
-                </button>
+             <div className="message-input-container">
+                <div className="textarea-container">
+                    <textarea
+                        ref={textareaRef}
+                        value={input}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Type a message... Use **bold**, *italic*, `code`"
+                        disabled={!isConnected}
+                    />
+                </div>
             </div>
         </div>
     );

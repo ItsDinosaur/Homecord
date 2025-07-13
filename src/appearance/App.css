@@ -22,7 +22,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  overflow-y: auto;
+  overflow: hidden;
   
 }
 
@@ -58,6 +58,7 @@ button:active {
 .content {
   flex: 1;
   padding: 10px;
+  padding-bottom: 0;
   display: flex;
   overflow-x: hidden;
   flex-direction: column;
