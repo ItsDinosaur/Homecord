@@ -33,6 +33,11 @@ class WebSocketManager {
     private isConnected: boolean = false;
     private listeners: Map<string, ((data: any) => void)[]> = new Map();
     private statusListeners: ((connected: boolean) => void)[] = [];
+    private reconnectAttempts: number = 0;
+    private maxReconnectAttempts: number = 5;
+    private reconnectDelay: number = 1000; // Start with 1 second
+    private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+    private shouldReconnect: boolean = true;
 
     async connectWebSocket(): Promise<void> {
         let cancelled = false;
@@ -71,7 +76,10 @@ class WebSocketManager {
                 }
                 console.log("✅ WebSocket connection established");
                 this.isConnected = true;
+                this.reconnectAttempts = 0; // Reset attempts on successful connection
+                this.reconnectDelay = 1000; // Reset delay
                 this.notifyStatusListeners(true);
+                this.startHeartbeat();
             };
 
             this.socket.onmessage = (event) => {
@@ -84,20 +92,64 @@ class WebSocketManager {
                 console.log("Close code:", event.code);
                 console.log("Close reason:", event.reason);
                 this.isConnected = false;
+                this.stopHeartbeat();
                 this.notifyStatusListeners(false);
+
+                // Attempt to reconnect unless manually disconnected
+                if (this.shouldReconnect && event.code !== 1000) {
+                    this.attemptReconnect();
+                }
             };
 
             this.socket.onerror = (error) => {
                 console.error("❌ WebSocket error:", error);
                 this.isConnected = false;
+                this.stopHeartbeat();
                 this.notifyStatusListeners(false);
             };
 
         } catch (error) {
             console.error("Failed to connect", error);
+            if (this.shouldReconnect) {
+                this.attemptReconnect();
+            }
         }
     }
+    private attemptReconnect(): void {
+        if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+            console.log("❌ Max reconnection attempts reached");
+            return;
+        }
 
+        this.reconnectAttempts++;
+        console.log(`🔄 Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts}) in ${this.reconnectDelay}ms`);
+
+        setTimeout(() => {
+            this.connectWebSocket();
+        }, this.reconnectDelay);
+
+        // Exponential backoff with jitter
+        this.reconnectDelay = Math.min(this.reconnectDelay * 2 + Math.random() * 1000, 30000);
+    }
+
+    private startHeartbeat(): void {
+        this.stopHeartbeat(); // Clear any existing interval
+        
+        // Send ping every 30 seconds to keep connection alive
+        this.heartbeatInterval = setInterval(() => {
+            if (this.socket?.readyState === WebSocket.OPEN) {
+                console.log("💓 Sending heartbeat ping");
+                this.send({ type: "ping" });
+            }
+        }, 30000);
+    }
+
+    private stopHeartbeat(): void {
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+            this.heartbeatInterval = null;
+        }
+    }
     // Handle incoming messages based on type
     private handleMessage(event: MessageEvent): void {
         console.log("📨 Received raw message:", event.data);
