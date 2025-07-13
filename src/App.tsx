@@ -24,8 +24,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("User"); // Store username
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (loggedInUsername: string) => {
     setIsLoggedIn(true);
+    setUsername(loggedInUsername);
     //fetchChannels 
     console.log("Fetching channels for room:", roomId);
     invoke<Channel[]>("fetchChannels", { roomId })

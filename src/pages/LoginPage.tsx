@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useChatSocket, initializeGlobalChatListeners } from "../hooks/useChatSocket";
 
 interface LoginPageProps {
-  onLoginSuccess: () => void;
+  onLoginSuccess: (username: string) => void;
 }
 
 function LoginPage( { onLoginSuccess }: LoginPageProps) {
@@ -17,7 +17,8 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
     const handleSubmit = (e: React.FormEvent) => {
         //debug
         if (username === "debug" || password === "debug") {
-            onLoginSuccess();
+            onLoginSuccess(username);
+            return;
         }
 
         e.preventDefault();
@@ -37,7 +38,7 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
                 return connectWebSocket();
             })
             .then(() => {
-                onLoginSuccess();
+                onLoginSuccess(username);
             })
             .catch((error) => {
                 console.error("Error during login/storage process:", error);
