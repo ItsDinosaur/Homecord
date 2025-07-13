@@ -63,12 +63,12 @@
     }
     
     .message-content {
-        width: fit-content;
+        max-width: 100%;
         border-radius: 8px;
         box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(5px) saturate(1.8);
 
-        font-size: .8em;
+        font-size: 1em;
     }
 
     img{

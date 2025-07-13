@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Channel } from "../types/Interfaces";
 import "../appearance/ChatPage.css";
-import exampleImage from "../assets/example.png"; // Example image path
-import exampleImage2 from "../assets/example2.png"; // Another example image path
 import { useChatSocket } from "../hooks/useChatSocket";
 import { Message } from "../types/Interfaces";
-import { Grid } from "@mui/material";
+import ReactMarkdown  from "react-markdown";
+import 'katex/dist/katex.min.css'
+import CodeBlock from "../components/CodeBlock";
 
 interface ChatPageProps {
   channel: Channel;
@@ -66,13 +66,20 @@ function ChatPage({ channel }: ChatPageProps) {
                         }`}
                     >
                         <div className="message-content">
-                            <strong>{message.username}:</strong> {message.content}
+                            <strong>{message.username}:</strong> 
+                            <ReactMarkdown 
+                                components={{
+                                    code: CodeBlock
+                                }}>
+                                {message.content}
+                            </ReactMarkdown>
                         </div>
                         <span className="timestamp">
                             {new Date(message.timestamp).toLocaleTimeString()}
                         </span>
                     </div>
                 ))}
+                
             </div>
             
             <div className="message-input-container">
