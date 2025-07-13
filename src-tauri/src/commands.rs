@@ -2,8 +2,7 @@ use crate::user::encryption::hash;
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
 use keyring::Entry;
-use urlencoding::encode as encodeURIComponent;
-
+use chrono::NaiveDateTime;
 
 #[derive(Serialize)]
 struct LoginPayload {
@@ -148,13 +147,13 @@ pub async fn fetchChannels(room_id: String) -> Result<Vec<Channel>, String> {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Message {
     id: String,
     channel_id: String,
     user_id: String,
     content: String,
-    timestamp: String,
+    timestamp: NaiveDateTime,
     edited: bool,
     parent_message_id: Option<String>,
     attachments_url: Option<String>,
