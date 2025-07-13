@@ -3,9 +3,7 @@ import { Channel } from "../types/Interfaces";
 import "../appearance/ChatPage.css";
 import { useChatSocket } from "../hooks/useChatSocket";
 import { Message } from "../types/Interfaces";
-import ReactMarkdown  from "react-markdown";
-import 'katex/dist/katex.min.css'
-import CodeBlock from "../components/CodeBlock";
+import { MarkdownRenderer } from "../components/MarkdownRenderer";
 
 interface ChatPageProps {
   channel: Channel;
@@ -67,12 +65,9 @@ function ChatPage({ channel }: ChatPageProps) {
                     >
                         <div className="message-content">
                             <strong>{message.username}:</strong> 
-                            <ReactMarkdown 
-                                components={{
-                                    code: CodeBlock
-                                }}>
+                            <MarkdownRenderer>
                                 {message.content}
-                            </ReactMarkdown>
+                            </MarkdownRenderer>
                         </div>
                         <span className="timestamp">
                             {new Date(message.timestamp).toLocaleTimeString()}
