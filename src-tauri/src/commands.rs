@@ -146,5 +146,58 @@ pub async fn fetchChannels(room_id: String) -> Result<Vec<Channel>, String> {
             .unwrap_or_else(|_| "Unknown error".to_string());
         Err(format!("Failed to fetch channels: {}", error_message))
     }
-    
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Message {
+    id: String,
+    channel_id: String,
+    user_id: String,
+    content: String,
+    timestamp: String,
+    edited: bool,
+    parent_message_id: Option<String>,
+    attachments_url: Option<String>,
+    attachment_type: Option<String>,
+    is_pinned: bool,
+    duration: Option<i32>,
+}
+
+#[tauri::command]
+pub async fn fetchMessages(channel_id: String) -> Result<Vec<Message>, String> {
+    let client = Client::new();
+    let access_token = get_access_token()
+        .await
+        .unwrap_or_else(|e| {
+            eprintln!("Error retrieving access token: {}", e);
+            String::new()
+        });
+    let url = "http://homecord.itsdinosaur.com/protected/messages/";
+    let payload = serde_json::json!({
+        "channel_id": channel_id,
+        "timestamp": chrono::Utc::now().timestamp_millis(),
+    });
+    let response = client
+        .post(url)
+        .bearer_auth(access_token)
+        .json(&payload)
+        .send()
+        .await
+        .map_err(|e| format!("Request failed: {}", e))?;
+    if response.status().is_success() {
+        eprintln!("Messages fetched successfully for channel {}", channel_id);
+        let messages: Vec<Message> = response
+            .json()
+            .await
+            .map_err(|e| format!("Failed to parse response: {}", e))?;
+        Ok(messages)
+    } else {
+        eprintln!("Failed to fetch messages for channel {} with status: {}", channel_id, response
+        .status());
+        let error_message = response
+            .text()
+            .await
+            .unwrap_or_else(|_| "Unknown error".to_string());
+        Err(format!("Failed to fetch messages: {}", error_message))
+    }
 }

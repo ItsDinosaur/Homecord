@@ -37,9 +37,6 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
                 return connectWebSocket();
             })
             .then(() => {
-                // Initialize global listeners after successful connection
-                console.log("Initializing global chat listeners after login");
-                initializeGlobalChatListeners();
                 onLoginSuccess();
             })
             .catch((error) => {

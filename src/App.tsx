@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./appearance/App.css";
 import {Sidebar} from "./components/Sidebar";
-import { Channel } from "./types/Interfaces";
+import { Channel, Message } from "./types/Interfaces";
 import ChatPage from "./pages/ChatPage.tsx";
 import VoicePage from "./pages/VoicePage.tsx";
 import ShoppingListPage from "./pages/ShoppingListPage.tsx";
@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import Notification from "./components/Notification.tsx";
 import UserProfilePage from "./pages/UserProfilePage.tsx";
+import { initializeGlobalChatListeners } from "./hooks/useChatSocket";
 
 import { invoke } from "@tauri-apps/api/core";
 
@@ -31,6 +32,30 @@ function App() {
       .then((fetchedChannels) => {
         setChannels(fetchedChannels);
         console.log("Fetched channels:", fetchedChannels);
+        // Fetch messages for each channel
+        const messagePromises = fetchedChannels.map(channel => 
+          invoke("fetchMessages", { channelId: channel.channel_id })
+            .then((messages) => {
+              console.log(`Fetched messages for channel ${channel.channel_name}:`, messages);
+              return { channelId: channel.channel_id, messages };
+            })
+            .catch((error) => {
+              console.error(`Error fetching messages for channel ${channel.channel_name}:`, error);
+              return { channelId: channel.channel_id, messages: [] };
+            })
+        );
+
+        Promise.all(messagePromises)
+        .then((channelMessages) => {
+          console.log("All messages fetched:", channelMessages);
+          // Initialize global chat listeners with fetched messages
+          initializeGlobalChatListeners(channelMessages as { channelId: string; messages: Message[]; }[]);
+        })
+        .catch((error) => {
+          console.error("Error fetching some messages:", error);
+          // Initialize with empty messages if fetch fails
+          initializeGlobalChatListeners([]);
+        });
       })
       .catch((error) => {
         console.error("Error fetching channels:", error);
