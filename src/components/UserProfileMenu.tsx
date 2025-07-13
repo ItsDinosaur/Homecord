@@ -43,7 +43,7 @@ export function UserProfileMenu({ isOpen, onClose, onLogout, onSettings, usernam
                     <span className="option-icon">⚙️</span>
                     Settings
                 </button>
-                <button className="menu-option" onClick={() => window.open('https://github.com/your-repo', '_blank')}>
+                <button className="menu-option" onClick={() => window.open('https://github.com/ItsDinosaur/Homecord', '_blank')}>
                     <span className="option-icon">📖</span>
                     Help & Support
                 </button>

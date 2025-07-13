@@ -98,9 +98,16 @@ ul {
     height: 30px;
 }
 
+.add-channel-container {
+    position: relative; /* This is crucial for absolute positioning of the menu */
+    display: inline-block; /* Ensure the container wraps around the button */
+}
+
 .sidebar-header {
     padding: 15px 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative; /* Allow overflow if needed */
+    overflow: visible; /* Allow menu to overflow */
 }
 
 .sidebar-content {

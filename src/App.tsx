@@ -88,6 +88,19 @@ function App() {
     // Add any other logout logic here
   };
 
+  const handleAddChannel = (channelName: string) => {
+    console.log(`Creating channel: ${channelName}`);
+    // Add your channel creation logic here
+    // For example:
+    // invoke("createChannel", { roomId, channelName, channelType: "text" })
+    //   .then((newChannel) => {
+    //     setChannels([...channels, newChannel]);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error creating channel:", error);
+    //   });
+  };
+
   const renderPage = () => {
     // Handle different views
     switch (currentView) {
@@ -135,6 +148,7 @@ function App() {
         onSelectChannel={handleSelectChannel} // Use the new handler
         onLogout={handleLogout} // Add logout handler
         onOpenSettings={handleOpenSettings} // Add settings handler
+        onAdd={handleAddChannel} // Pass the updated handler
         username={username} // Pass actual username
       />
       

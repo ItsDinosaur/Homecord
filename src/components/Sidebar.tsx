@@ -6,6 +6,7 @@ import List from "../types/List";
 import { UserProfileMenu } from "./UserProfileMenu";
 import addChannelIcon from '../assets/add-channel.svg';
 import exampleReactIcon from "../assets/react.svg"
+import { AddChannelMenu } from "./AddChannelMenu";
 
 
 interface SidebarProps {
@@ -13,6 +14,7 @@ interface SidebarProps {
   onSelectChannel: (channel: Channel) => void;
   onLogout?: () => void;
   onOpenSettings?: () => void; // Add this prop
+  onAdd?: (channelName: string) => void // Accept channel name parameter
   username?: string;
 }
 
@@ -28,14 +30,16 @@ const renderChannel = (channel: Channel,
 
 
 
-export function Sidebar({ channels, onSelectChannel, onLogout, onOpenSettings, username = "User" }: SidebarProps) {
+export function Sidebar({ channels, onSelectChannel, onLogout, onOpenSettings, onAdd, username = "User" }: SidebarProps) {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [isAddChannelMenuOpen, setIsAddChannelMenuOpen] = useState(false);
+
 
     const handleProfileClick = () => {
         setIsUserMenuOpen(!isUserMenuOpen);
     };
 
-    const handleMenuClose = () => {
+    const handleUserMenuClose = () => {
         setIsUserMenuOpen(false);
     };
 
@@ -53,12 +57,38 @@ export function Sidebar({ channels, onSelectChannel, onLogout, onOpenSettings, u
         }
     };
 
+    const handleAddChannelClick = () => {
+        setIsAddChannelMenuOpen(!isAddChannelMenuOpen);
+    };
+
+    const handleAddChannelMenuClose = () => {
+        setIsAddChannelMenuOpen(false);
+    };
+
+    const handleAdd = (channelName: string) => { // Accept channel name parameter
+        setIsAddChannelMenuOpen(false);
+        if (onAdd) {
+            onAdd(channelName); // Pass channel name to parent
+        }
+    };
+
     return (
         <div className="sidebar">
             <div className="sidebar-header">
-                <button className="add-channel-button">
-                    <img src={addChannelIcon} className="add-channel-icon" alt="Add Channel" />
-                </button>
+                <div className="add-channel-container">
+                    <button 
+                        className="add-channel-button" 
+                        onClick={handleAddChannelClick} 
+                        aria-expanded={isAddChannelMenuOpen}
+                    >
+                        <img src={addChannelIcon} className="add-channel-icon" alt="Add Channel" />
+                    </button>
+                    <AddChannelMenu
+                        isOpen={isAddChannelMenuOpen}
+                        onClose={handleAddChannelMenuClose}
+                        onAdd={handleAdd} // Updated handler
+                    />
+                </div>
                 
             </div>
             <div className="sidebar-content">
@@ -81,7 +111,7 @@ export function Sidebar({ channels, onSelectChannel, onLogout, onOpenSettings, u
                     <span className="username-display">{username}</span>
                     <UserProfileMenu
                         isOpen={isUserMenuOpen}
-                        onClose={handleMenuClose}
+                        onClose={handleUserMenuClose}
                         onLogout={handleLogout}
                         onSettings={handleSettings}
                         username={username}
