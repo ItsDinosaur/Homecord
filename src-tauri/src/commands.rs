@@ -2,7 +2,8 @@ use crate::user::encryption::hash;
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
 use keyring::Entry;
-use chrono::NaiveDateTime;
+use chrono::Utc;
+use chrono::DateTime;
 
 #[derive(Serialize)]
 struct LoginPayload {
@@ -153,13 +154,14 @@ pub struct Message {
     channel_id: String,
     user_id: String,
     content: String,
-    timestamp: NaiveDateTime,
+    timestamp: DateTime<Utc>,
     edited: bool,
     parent_message_id: Option<String>,
-    attachments_url: Option<String>,
+    attachment_url: Option<String>,
     attachment_type: Option<String>,
     is_pinned: bool,
-    duration: Option<i32>,
+    duration_seconds: Option<i32>,
+    username: String,
 }
 
 #[tauri::command]
@@ -174,7 +176,6 @@ pub async fn fetchMessages(channel_id: String) -> Result<Vec<Message>, String> {
     let url = "http://homecord.itsdinosaur.com/protected/messages/";
     let payload = serde_json::json!({
         "channel_id": channel_id,
-        "timestamp": chrono::Utc::now().timestamp_millis(),
     });
     let response = client
         .post(url)

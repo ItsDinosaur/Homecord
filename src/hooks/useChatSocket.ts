@@ -36,7 +36,7 @@ const notifyGlobalStateUpdate = () => {
 };
 
 // Initialize global listeners - call this on login
-export const initializeGlobalChatListeners = (initialMessages?: { channelId: string, messages: Message[] }[]) => {
+export const initializeGlobalChatListeners = (initialMessages?: { channel_id: string, messages: Message[] }[]) => {
     if (globalListenersInitialized) {
         console.log("🌐 Global listeners already initialized");
         return;
@@ -45,8 +45,8 @@ export const initializeGlobalChatListeners = (initialMessages?: { channelId: str
     console.log("🌐 Initializing global channel listeners");
     // Populate global state with initial messages if provided
     if (initialMessages) {
-        initialMessages.forEach(({ channelId, messages }) => {
-            globalChannelMessages.set(channelId, messages);
+        initialMessages.forEach(({ channel_id, messages }) => {
+            globalChannelMessages.set(channel_id, messages);
         });
         // Notify all components to update with initial messages
         notifyGlobalStateUpdate();

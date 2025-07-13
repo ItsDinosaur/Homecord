@@ -38,11 +38,11 @@ function App() {
           invoke("fetchMessages", { channelId: channel.channel_id })
             .then((messages) => {
               console.log(`Fetched messages for channel ${channel.channel_name}:`, messages);
-              return { channelId: channel.channel_id, messages };
+              return { channel_id: channel.channel_id, messages };
             })
             .catch((error) => {
               console.error(`Error fetching messages for channel ${channel.channel_name}:`, error);
-              return { channelId: channel.channel_id, messages: [] };
+              return { channel_id: channel.channel_id, messages: [] };
             })
         );
 
@@ -50,7 +50,7 @@ function App() {
         .then((channelMessages) => {
           console.log("All messages fetched:", channelMessages);
           // Initialize global chat listeners with fetched messages
-          initializeGlobalChatListeners(channelMessages as { channelId: string; messages: Message[]; }[]);
+          initializeGlobalChatListeners(channelMessages as { channel_id: string; messages: Message[]; }[]);
         })
         .catch((error) => {
           console.error("Error fetching some messages:", error);
