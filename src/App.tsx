@@ -103,7 +103,7 @@ function App() {
         // Render channel-specific pages
         switch (currentChannel.channel_type) {
           case "text":
-            return <ChatPage channel={currentChannel} />;
+            return <ChatPage channel={currentChannel} username={username} />;
           case "voice":
             return <VoicePage channel={currentChannel} />;
           case "shopping":

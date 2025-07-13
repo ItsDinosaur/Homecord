@@ -8,9 +8,10 @@ import ReactMarkdown from "react-markdown";
 
 interface ChatPageProps {
   channel: Channel;
+  username: string
 }
 
-function ChatPage({ channel }: ChatPageProps) {
+function ChatPage({ channel, username }: ChatPageProps) {
     const endRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const previewRef = useRef<HTMLDivElement>(null);
@@ -28,7 +29,7 @@ function ChatPage({ channel }: ChatPageProps) {
         if (!input.trim()) return;
 
         const newMessage: Message = {
-            username: "kai", // Replace with actual username
+            username: username,
             content: input,
             timestamp: new Date().toISOString(),
         };
@@ -93,7 +94,7 @@ function ChatPage({ channel }: ChatPageProps) {
                     <div 
                         key={index} 
                         className={`message ${
-                            message.username === "kai" ? "own" : 
+                            message.username === username ? "own" : 
                             message.username === "System" ? "system" : "other"
                         }`}
                     >
