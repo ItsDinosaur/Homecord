@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const StyledWrapper = styled.div`
   #checklist {
     --background: #fff;
-    --text: #414856;
+    --text: color: var(--color-text-primary);
     --check: #4f29f0;
     --disabled: #c3c8de;
     --width: fit-content;

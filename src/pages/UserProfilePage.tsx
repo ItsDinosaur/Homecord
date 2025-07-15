@@ -1,6 +1,9 @@
 // pages/UserProfilePage.tsx
 import { useState } from 'react';
 import '../appearance/UserProfilePage.css';
+import { ColorPaletteSelector } from '../components/ColorPaletteSelector';
+import { colorPalettes, applyColorPalette, getCurrentPalette, saveSelectedPalette } from '../appearance/ColorPalette';
+
 
 interface UserProfilePageProps {
     username: string;
@@ -11,10 +14,25 @@ export default function UserProfilePage({ username, onBack }: UserProfilePagePro
     const [displayName, setDisplayName] = useState(username);
     const [email, setEmail] = useState('user@example.com');
     const [status, setStatus] = useState('online');
+    const [selectedPalette, setSelectedPalette] = useState(getCurrentPalette());
 
     const handleSave = () => {
-        console.log('Saving profile changes:', { displayName, email, status });
-        // Add your save logic here
+        console.log('Saving profile changes:', { displayName, email, status, selectedPalette });
+        // Save the selected palette
+        saveSelectedPalette(selectedPalette);
+        const palette = colorPalettes.find(p => p.id === selectedPalette);
+        if (palette) {
+            applyColorPalette(palette);
+        }
+    };
+
+    const handlePaletteChange = (paletteId: string) => {
+        setSelectedPalette(paletteId);
+        // Apply immediately for preview
+        const palette = colorPalettes.find(p => p.id === paletteId);
+        if (palette) {
+            applyColorPalette(palette);
+        }
     };
 
     return (
@@ -70,19 +88,16 @@ export default function UserProfilePage({ username, onBack }: UserProfilePagePro
                 
                 <div className="profile-section">
                     <h2>Appearance</h2>
-                    <div className="form-group">
-                        <label>Theme</label>
-                        <div className="theme-options">
-                            <label>
-                                <input type="radio" name="theme" value="dark" defaultChecked />
-                                Dark
-                            </label>
-                            <label>
-                                <input type="radio" name="theme" value="light" />
-                                Light
-                            </label>
-                        </div>
-                    </div>
+                    <ColorPaletteSelector 
+                        selectedPaletteId={selectedPalette}
+                        onPaletteChange={handlePaletteChange}
+                    />
+                </div>
+
+                <div className="profile-section">
+                    <button className="save-button" onClick={handleSave}>
+                        Save Changes
+                    </button>
                 </div>
             </div>
         </div>

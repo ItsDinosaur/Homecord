@@ -11,6 +11,8 @@ import Notification from "./components/Notification.tsx";
 import UserProfilePage from "./pages/UserProfilePage.tsx";
 import { useChatSocket, initializeGlobalChatListeners } from "./hooks/useChatSocket";
 import { wsManager } from "./hooks//websocketManager";
+import { colorPalettes, applyColorPalette, getCurrentPalette } from './appearance/ColorPalette';
+
 
 import { invoke } from "@tauri-apps/api/core";
 
@@ -49,6 +51,14 @@ function App() {
     };
 
     initializeWebSocket();
+  }, []);
+  useEffect(() => {
+    // Apply saved color palette on app startup
+    const savedPaletteId = getCurrentPalette();
+    const palette = colorPalettes.find(p => p.id === savedPaletteId);
+    if (palette) {
+      applyColorPalette(palette);
+    }
   }, []);
 
   const handleLoginSuccess = (loggedInUsername: string) => {

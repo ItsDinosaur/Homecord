@@ -4,11 +4,11 @@
     bottom: 60px;
     left: 10px;
     width: 200px;
-    background: #2f3136;
+    background: var(--color-background-primary);
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    border: 1px solid #40444b;
+    border: 1px solid var(--color-border-secondary);;
     animation: slideUp 0.2s ease-out;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .username {
-    color: #ffffff;
+    color: var(--color-text-primary);;
     font-weight: 600;
     font-size: 14px;
 }
@@ -40,24 +40,23 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #3ba55c;
+    background: var(--color-accent-success);
 }
 
 .status-indicator.online {
-    background: #3ba55c;
+    background: var(--color-accent-success);
 }
 
 .status-indicator.away {
-    background: #faa61a;
+    background: var(--color-accent-warning);
 }
 
 .status-indicator.busy {
-    background: #ed4245;
+    background: var(--color-accent-danger);
 }
 
 .menu-divider {
     height: 1px;
-    background: #40444b;
     margin: 4px 0;
 }
 
@@ -69,7 +68,7 @@
     width: 100%;
     background: none;
     border: none;
-    color: #b9bbbe;
+    color: var(--color-text-primary);
     padding: 8px 16px;
     text-align: left;
     cursor: pointer;
@@ -81,17 +80,18 @@
 }
 
 .menu-option:hover {
-    background: #40444b;
-    color: #ffffff;
+    background: var(--color-accent-primary);
+    color: var(--color-text-secondary);
 }
 
 .menu-option.logout {
-    color: #ed4245;
+    color: var(--color-text-primary);
+    background-color: var(--color-accent-danger);
 }
 
 .menu-option.logout:hover {
-    background: #ed4245;
-    color: #ffffff;
+    background: var(--color-accent-danger-hover);
+    color: var(--color-text-primary);
 }
 
 .option-icon {

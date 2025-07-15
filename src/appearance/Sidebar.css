@@ -40,16 +40,16 @@ ul {
 
 .channel-item a {
     text-decoration: none;
-    color: white;
+    color: var(--color-text-primary);
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 90%;
     height: 30px; /* Adjust height for better spacing */
     padding-left: 5px;
 }
 
 .channel-item:hover {
-    background-color: rgb(63, 63, 63);
+    background-color: var(--color-accent-secondary);
     border-radius: 5px;
     cursor: pointer;
 }
@@ -60,9 +60,9 @@ ul {
 .full-name {
     display: none;
     position: absolute;
-    background-color: #000000;
+    background-color: transparent;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 3px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     z-index: 10;
     white-space: nowrap;
@@ -71,7 +71,7 @@ ul {
 .sidebar-footer {
     margin-top: auto;
     width: 100%;
-    height: 70px;
+    height: 120px;
     text-align: center;
     background-color: inherit;
     display: flex;
@@ -81,6 +81,7 @@ ul {
     font-size: x-small;
     overflow: visible; /* Allow overflow */
     position: relative; /* For proper positioning context */
+    border-top: 1px solid var(--color-text-secondary);
 }
 
 .add-channel-button{
@@ -105,7 +106,7 @@ ul {
 
 .sidebar-header {
     padding: 15px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--color-text-secondary);
     position: relative; /* Allow overflow if needed */
     overflow: visible; /* Allow menu to overflow */
 }
@@ -133,7 +134,7 @@ ul {
     width: 42px;
     height: 42px;
     background-color: transparent;
-    border: 2px solid rgba(199, 193, 193, 0.979);
+    border: 2px solid var(--color-border-secondary);
     border-radius: 100%;
     display: flex;
     align-items: center;
@@ -143,7 +144,7 @@ ul {
 }
 
 .user-profile-button:hover {
-    background-color: rgba(63, 63, 63, 0.5);
+    background-color: var(--color-accent-secondary);
 }
 
 .user-profile-icon {
@@ -154,7 +155,7 @@ ul {
 
 /* Add styles for the username display */
 .username-display {
-    color: white;
+    color: var(--color-text-primary);
     font-size: 20px;        /* Bigger text size */
     font-weight: 600;       /* Make it bold */
     white-space: nowrap;    /* Keep text on one line */

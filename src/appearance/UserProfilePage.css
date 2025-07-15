@@ -1,22 +1,22 @@
 /* appearance/UserProfilePage.css */
 .user-profile-page {
     flex: 1;
-    background: #36393f;
-    color: white;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
     overflow-y: auto;
 }
 
 .profile-header {
     padding: 20px;
-    border-bottom: 1px solid #40444b;
+    border-bottom: 1px solid var(--color-border-primary);
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
 .back-button {
-    background: #5865f2;
-    color: white;
+    background: var(--color-accent-primary);
+    color: var(--color-text-primary);
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
@@ -25,7 +25,7 @@
 }
 
 .back-button:hover {
-    background: #4752c4;
+    background: var(--color-accent-secondary);
 }
 
 .profile-content {
@@ -35,14 +35,14 @@
 
 .profile-section {
     margin-bottom: 40px;
-    background: #2f3136;
+    background: var(--color-background-secondary);
     padding: 20px;
     border-radius: 8px;
 }
 
 .profile-section h2 {
     margin-bottom: 20px;
-    color: #ffffff;
+    color: var(--color-text-primary);
 }
 
 .form-group {
@@ -53,24 +53,24 @@
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #b9bbbe;
+    color: var(--color-text-secondary);
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
     padding: 10px;
-    background: #40444b;
-    border: 1px solid #40444b;
+    background: var(--color-background-tertiary);
+    border: 1px solid var(--color-border-primary);
     border-radius: 4px;
-    color: white;
+    color: var(--color-text-primary);
     font-size: 16px;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #5865f2;
+    border-color: var(--color-accent-primary);
 }
 
 .theme-options {
@@ -86,8 +86,8 @@
 }
 
 .save-button {
-    background: #3ba55c;
-    color: white;
+    background: var(--color-accent-success);
+    color: var(--color-text-primary);
     border: none;
     padding: 12px 24px;
     border-radius: 4px;
@@ -101,12 +101,12 @@
 }
 
 .danger-zone {
-    border: 1px solid #ed4245;
+    border: 1px solid var(--color-accent-danger);
 }
 
 .danger-button {
-    background: #ed4245;
-    color: white;
+    background: var(--color-accent-danger);
+    color: var(--color-text-primary);
     border: none;
     padding: 12px 24px;
     border-radius: 4px;
@@ -116,4 +116,41 @@
 
 .danger-button:hover {
     background: #c23616;
+}
+
+/* Color palette selector styles */
+.palette-selector {
+    display: flex;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.palette-option {
+    width: 60px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.palette-option.selected {
+    border-color: var(--color-accent-primary);
+}
+
+.palette-preview {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.palette-color {
+    width: 100%;
+    height: 100%;
 }

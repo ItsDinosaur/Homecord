@@ -1,6 +1,7 @@
 import { Channel } from "../types/Interfaces";
 import { useWebRTC } from '../hooks/useWebRTC';
 import { useRef, useEffect } from "react";
+import '../appearance/VoicePage.css';
 
 interface VoicePageProps {
     channel: Channel;

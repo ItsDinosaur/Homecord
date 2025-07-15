@@ -4,7 +4,7 @@
     top: 100%; /* Position below the button */
     left: 0; /* Align with the left edge of the button */
     width: 250px; /* Increase width for better form layout */
-    background: #2f3136;
+    background: var(--color-background-primary);
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 9999; /* Higher z-index to ensure visibility */
@@ -31,7 +31,7 @@
 
 .menu-header h3 {
     margin: 0;
-    color: #ffffff;
+    color: var(--color-text-primary);
     font-size: 16px;
     font-weight: 600;
 }
@@ -47,7 +47,7 @@
 .input-group label {
     display: block;
     margin-bottom: 6px;
-    color: #b9bbbe;
+    color: var(--color-text-primary);
     font-size: 14px;
     font-weight: 600;
 }
@@ -55,22 +55,22 @@
 .input-group input {
     width: 100%;
     padding: 10px 12px;
-    background: #40444b;
-    border: 1px solid #40444b;
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-secondary);
     border-radius: 4px;
-    color: #ffffff;
+    color: var(--color-text-primary);
     font-size: 14px;
     box-sizing: border-box;
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #5865f2;
-    background: #383a40;
+    border-color: var(--color-border-primary);
+    background: var(--color-background-secondary);
 }
 
 .input-group input::placeholder {
-    color: #6c757d;
+    color: var(--color-text-primary);
 }
 
 .menu-options {
@@ -83,7 +83,7 @@
     width: 100%;
     background: none;
     border: none;
-    color: #b9bbbe;
+    color: var(--color-text-primary);
     padding: 10px 12px;
     text-align: left;
     cursor: pointer;
@@ -96,33 +96,31 @@
 }
 
 .menu-option:hover:not(:disabled) {
-    background: #40444b;
-    color: #ffffff;
+    color: var(--color-text-primary);
 }
 
 .menu-option.primary {
-    background: #5865f2;
-    color: #ffffff;
+    background: var(--color-accent-success);
+    color: var(--color-text-primary);
 }
 
 .menu-option.primary:hover:not(:disabled) {
-    background: #4752c4;
+    background: var(--color-accent-success-hover);
 }
 
 .menu-option.primary:disabled {
-    background: #4f545c;
-    color: #6c757d;
+    background: var(--color-accent-success-disabled);
+    color: var(--color-text-primary);
     cursor: not-allowed;
 }
 
 .menu-option.secondary {
-    background: transparent;
+    background: var(--color-accent-danger-disabled);
     border: 1px solid #40444b;
 }
 
 .menu-option.secondary:hover {
-    background: #ed4245;
-    border-color: #ed4245;
+    background: var(--color-accent-danger-hover);
 }
 
 .add-channel-icon,
