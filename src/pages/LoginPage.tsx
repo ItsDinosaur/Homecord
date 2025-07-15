@@ -1,5 +1,5 @@
 import "../appearance/LoginPage.css";
-import { Channel, LoginResponse } from "../types/Interfaces";
+import { LoginResponse } from "../types/Interfaces";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "react-toastify";

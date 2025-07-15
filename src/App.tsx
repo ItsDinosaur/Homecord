@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./appearance/App.css";
-import {Sidebar} from "./components/Sidebar";
+import { Sidebar } from "./components/Sidebar";
 import { Channel, Message } from "./types/Interfaces";
 import ChatPage from "./pages/ChatPage.tsx";
 import VoicePage from "./pages/VoicePage.tsx";
@@ -29,12 +29,32 @@ function App() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const { connectWebSocket } = useChatSocket();
 
+  useEffect(() => {
+    const initializeWebSocket = async () => {
+      try {
+        await connectWebSocket(); // Don't assign if it returns void
+
+        // Get the socket from the manager after connection
+        const connectedSocket = wsManager.getWebSocket();
+
+        if (connectedSocket) {
+          console.log('WebSocket connected');
+          setSocket(connectedSocket);
+        } else {
+          console.error('Failed to connect WebSocket');
+        }
+      } catch (error) {
+        console.error('WebSocket connection error:', error);
+      }
+    };
+
+    initializeWebSocket();
+  }, []);
+
   const handleLoginSuccess = (loggedInUsername: string) => {
     setIsLoggedIn(true);
-    connectWebSocket();
-    setSocket(wsManager.getWebSocket()); // Set the WebSocket connection
-    // We should create a context for UserData so we can access it globally like username, userID, settings ....
-    setUsername(loggedInUsername);
+    setUsername(loggedInUsername); // We should create a context for UserData so we can access it globally like username, userID, settings ....
+
     //fetchChannels 
     console.log("Fetching channels for room:", roomId);
     invoke<Channel[]>("fetchChannels", { roomId })
@@ -42,7 +62,7 @@ function App() {
         setChannels(fetchedChannels);
         console.log("Fetched channels:", fetchedChannels);
         // Fetch messages for each channel
-        const messagePromises = fetchedChannels.map(channel => 
+        const messagePromises = fetchedChannels.map(channel =>
           invoke("fetchMessages", { channelId: channel.channel_id })
             .then((messages) => {
               console.log(`Fetched messages for channel ${channel.channel_name}:`, messages);
@@ -55,16 +75,16 @@ function App() {
         );
 
         Promise.all(messagePromises)
-        .then((channelMessages) => {
-          console.log("All messages fetched:", channelMessages);
-          // Initialize global chat listeners with fetched messages
-          initializeGlobalChatListeners(channelMessages as { channel_id: string; messages: Message[]; }[]);
-        })
-        .catch((error) => {
-          console.error("Error fetching some messages:", error);
-          // Initialize with empty messages if fetch fails
-          initializeGlobalChatListeners([]);
-        });
+          .then((channelMessages) => {
+            console.log("All messages fetched:", channelMessages);
+            // Initialize global chat listeners with fetched messages
+            initializeGlobalChatListeners(channelMessages as { channel_id: string; messages: Message[]; }[]);
+          })
+          .catch((error) => {
+            console.error("Error fetching some messages:", error);
+            // Initialize with empty messages if fetch fails
+            initializeGlobalChatListeners([]);
+          });
       })
       .catch((error) => {
         console.error("Error fetching channels:", error);
@@ -114,25 +134,29 @@ function App() {
     switch (currentView) {
       case 'profile':
         return <UserProfilePage username={username} onBack={handleBackToChat} />;
-      
+
       case 'channel':
         if (!currentChannel) {
           setCurrentView('home'); // Fallback to home if no channel
           return <HomePage />;
         }
-        
+
         // Render channel-specific pages
         switch (currentChannel.channel_type) {
           case "text":
             return <ChatPage channel={currentChannel} username={username} />;
           case "voice":
-            return <VoicePage channel={currentChannel} userId={userId} ws={socket} />;
+            return socket ? (
+              <VoicePage channel={currentChannel} userId={userId} ws={socket} />
+            ) : (
+              <div>Connecting to voice...</div>
+            );
           case "shopping":
             return <ShoppingListPage channel={currentChannel} />;
           default:
             return <HomePage />;
         }
-      
+
       case 'home':
       default:
         return <HomePage />;
@@ -151,15 +175,15 @@ function App() {
 
   return (
     <div className="container">
-      <Sidebar 
-        channels={channels} 
+      <Sidebar
+        channels={channels}
         onSelectChannel={handleSelectChannel} // Use the new handler
         onLogout={handleLogout} // Add logout handler
         onOpenSettings={handleOpenSettings} // Add settings handler
         onAdd={handleAddChannel} // Pass the updated handler
         username={username} // Pass actual username
       />
-      
+
       <div className="content">
         {renderPage()}
       </div>

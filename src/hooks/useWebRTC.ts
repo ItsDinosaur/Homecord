@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 type PeerConnectionMap = Record<string, RTCPeerConnection>;
 
-export function useWebRTC(ws: WebSocket | null, currentUserId: string) {
+export function useWebRTC(ws: WebSocket, currentUserId: string) {
   const peerConnections = useRef<PeerConnectionMap>({});
   const localStream = useRef<MediaStream | null>(null);
   const [remoteStreams, setRemoteStreams] = useState<Record<string, MediaStream>>({});
@@ -44,6 +44,7 @@ export function useWebRTC(ws: WebSocket | null, currentUserId: string) {
     
     try {
       // Get audio stream
+      console.log('🎤 Requesting microphone permission...');
       localStream.current = await navigator.mediaDevices.getUserMedia({ audio: true });
       
       // Notify server we're joining
