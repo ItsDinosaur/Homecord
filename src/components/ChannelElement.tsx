@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Channel } from '../types/Interfaces';
 import hashtagChannelIcon from '../assets/hashtag-channel-icon.svg';
 import volumeUpIcon from '../assets/volume-up-channel-icon.svg';

@@ -1,5 +1,5 @@
 import "../appearance/Sidebar.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Channel } from "../types/Interfaces";
 import ChannelElement from "./ChannelElement";
 import List from "../types/List";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Channel } from "../types/Interfaces";
 import { useWebRTC } from '../hooks/useWebRTC';
 import { useRef, useEffect } from "react";
@@ -6,7 +5,7 @@ import { useRef, useEffect } from "react";
 interface VoicePageProps {
     channel: Channel;
     userId: string;
-    ws: WebSocket | null;
+    ws: WebSocket;
 }
 
 function VoicePage({ channel, userId, ws }: VoicePageProps) {

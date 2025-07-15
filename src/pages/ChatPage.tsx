@@ -14,7 +14,7 @@ interface ChatPageProps {
 function ChatPage({ channel, username }: ChatPageProps) {
     const endRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const previewRef = useRef<HTMLDivElement>(null);
+    //const previewRef = useRef<HTMLDivElement>(null);
     const { 
         messages, 
         onlineUsers, 
@@ -51,12 +51,6 @@ function ChatPage({ channel, username }: ChatPageProps) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
-        }
-    };
-
-    const handleScroll = () => {
-        if (textareaRef.current && previewRef.current) {
-            previewRef.current.scrollTop = textareaRef.current.scrollTop;
         }
     };
 

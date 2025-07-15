@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Channel } from "../types/Interfaces";
 import { StyledWrapper } from "../appearance/ShoppingList";
 import AddButton from "../components/AddButton";
@@ -8,7 +8,7 @@ interface ShoppingPageProps {
   channel: Channel;
 }
 
-function ShoppingListPage( { channel }: ShoppingPageProps) {
+function ShoppingListPage( {  }: ShoppingPageProps) {
     const [quantity, setQuantity] = React.useState(1);
     const updateQuantity = (delta: number) => {
         setQuantity((prev) => Math.max(1, prev + delta));
