@@ -3,7 +3,7 @@ import { Channel, LoginResponse } from "../types/Interfaces";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "react-toastify";
-import { useChatSocket, initializeGlobalChatListeners } from "../hooks/useChatSocket";
+
 
 interface LoginPageProps {
   onLoginSuccess: (username: string) => void;
@@ -12,7 +12,6 @@ interface LoginPageProps {
 function LoginPage( { onLoginSuccess }: LoginPageProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const { connectWebSocket } = useChatSocket(); // This will NOT initialize global listeners automatically
 
     const handleSubmit = (e: React.FormEvent) => {
         //debug
@@ -34,8 +33,6 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
             })
             .then(() => {
                 console.log("Tokens stored successfully");
-                // Connect WebSocket first
-                return connectWebSocket();
             })
             .then(() => {
                 onLoginSuccess(username);

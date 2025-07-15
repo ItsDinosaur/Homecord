@@ -271,6 +271,11 @@ class WebSocketManager {
         });
         return counts;
     }
+
+    // Getter for current WebSocket instance
+    getWebSocket(): WebSocket | null {
+        return this.socket;
+    }
 }
 
 export const wsManager = new WebSocketManager();

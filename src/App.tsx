@@ -9,7 +9,8 @@ import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import Notification from "./components/Notification.tsx";
 import UserProfilePage from "./pages/UserProfilePage.tsx";
-import { initializeGlobalChatListeners } from "./hooks/useChatSocket";
+import { useChatSocket, initializeGlobalChatListeners } from "./hooks/useChatSocket";
+import { wsManager } from "./hooks//websocketManager";
 
 import { invoke } from "@tauri-apps/api/core";
 
@@ -18,14 +19,21 @@ type CurrentView = 'home' | 'profile' | 'channel';
 function App() {
   //for now hardcoded room_id
   const roomId = "9e67ea3e-6910-4c5e-9507-d0b9b1238d92";
+  // for now hardcoded userId
+  const userId = "966e85df-3720-4366-9179-b0efd69ecda6"; //kai ID
   const [channels, setChannels] = useState<Channel[]>([]);
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
   const [currentView, setCurrentView] = useState<CurrentView>('home'); // Add view state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("User"); // Store username
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const { connectWebSocket } = useChatSocket();
 
   const handleLoginSuccess = (loggedInUsername: string) => {
     setIsLoggedIn(true);
+    connectWebSocket();
+    setSocket(wsManager.getWebSocket()); // Set the WebSocket connection
+    // We should create a context for UserData so we can access it globally like username, userID, settings ....
     setUsername(loggedInUsername);
     //fetchChannels 
     console.log("Fetching channels for room:", roomId);
@@ -118,7 +126,7 @@ function App() {
           case "text":
             return <ChatPage channel={currentChannel} username={username} />;
           case "voice":
-            return <VoicePage channel={currentChannel} />;
+            return <VoicePage channel={currentChannel} userId={userId} ws={socket} />;
           case "shopping":
             return <ShoppingListPage channel={currentChannel} />;
           default:
