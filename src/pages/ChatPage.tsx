@@ -5,6 +5,7 @@ import { useChatSocket } from "../hooks/useChatSocket";
 import { Message } from "../types/Interfaces";
 import { MarkdownRenderer } from "../components/MarkdownRenderer";
 import ReactMarkdown from "react-markdown";
+import EmojiPicker from 'emoji-picker-react';
 
 interface ChatPageProps {
   channel: Channel;
@@ -24,6 +25,7 @@ function ChatPage({ channel, username }: ChatPageProps) {
     } = useChatSocket(channel.channel_id);
     const [input, setInput] = useState("");
     const [showPreview, setShowPreview] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const handleSend = () => {
         if (!input.trim()) return;
@@ -52,6 +54,19 @@ function ChatPage({ channel, username }: ChatPageProps) {
             e.preventDefault();
             handleSend();
         }
+    };
+
+    const handleAddAttachment = () => {
+        // Placeholder for attachment logic
+        console.log("Attachment button clicked");
+    };
+
+    const handleEmojiPicker = () => {
+        setShowEmojiPicker(!showEmojiPicker);
+    };
+    const onEmojiClick = (emojiData: any) => {
+        setInput(prevInput => prevInput + emojiData.emoji);
+        setShowEmojiPicker(false);
     };
 
     useEffect(() => {
@@ -138,6 +153,14 @@ function ChatPage({ channel, username }: ChatPageProps) {
                         </div>
                     </div>
                 )}
+                {showEmojiPicker && (
+                <div className="emoji-picker-container">
+                    <EmojiPicker
+                        onEmojiClick={onEmojiClick}
+                        autoFocusSearch={false}
+                    />
+                </div>
+                )}
             
              <div className="message-input-container">
                 <div className="textarea-container">
@@ -150,7 +173,19 @@ function ChatPage({ channel, username }: ChatPageProps) {
                         disabled={!isConnected}
                     />
                 </div>
+                <div className="button-grid">
+                    <button onClick={handleAddAttachment}
+                            className="attachment-button">
+                            📎
+                    </button>
+                    <button onClick={handleEmojiPicker}
+                            className="emoji-button">
+                            😀
+                    </button>
+                </div>
+                
             </div>
+            
         </div>
     );
 }
