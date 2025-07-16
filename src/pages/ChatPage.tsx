@@ -5,7 +5,7 @@ import { useChatSocket } from "../hooks/useChatSocket";
 import { Message } from "../types/Interfaces";
 import { MarkdownRenderer } from "../components/MarkdownRenderer";
 import ReactMarkdown from "react-markdown";
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 
 interface ChatPageProps {
   channel: Channel;
@@ -72,8 +72,18 @@ function ChatPage({ channel, username }: ChatPageProps) {
     useEffect(() => {
         if (textareaRef.current) {
             const textarea = textareaRef.current;
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            textarea.style.height = 'auto'; // Reset height to auto to calculate new height
+            const minHeight = 24; // ~1.5em at 14px font
+            const maxHeight = 96; // ~6em at 14px font (4 lines)
+            const scrollHeight = textarea.scrollHeight;
+            
+            if (scrollHeight <= minHeight) {
+                textarea.style.height = minHeight + 'px';
+            } else if (scrollHeight >= maxHeight) {
+                textarea.style.height = maxHeight + 'px';
+            } else {
+                textarea.style.height = scrollHeight + 'px';
+            }
         }
     }, [input]);
 
@@ -153,15 +163,21 @@ function ChatPage({ channel, username }: ChatPageProps) {
                         </div>
                     </div>
                 )}
-                {showEmojiPicker && (
+                { showEmojiPicker && (
                 <div className="emoji-picker-container">
                     <EmojiPicker
                         onEmojiClick={onEmojiClick}
-                        autoFocusSearch={false}
-                    />
+                        skinTonesDisabled={true}
+                        emojiStyle={EmojiStyle.NATIVE}
+                        previewConfig={{ showPreview: true }}
+                        theme= {Theme.DARK}
+                        lazyLoadEmojis={true}
+                        width={350}
+                        height={400}
+                        >
+                        </EmojiPicker>
                 </div>
-                )}
-            
+                )}       
              <div className="message-input-container">
                 <div className="textarea-container">
                     <textarea

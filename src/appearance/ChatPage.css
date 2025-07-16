@@ -149,10 +149,13 @@
     display: flex;
     background: var(--color-background-secondary);
     border-top: 1px solid var(--color-border-primary);
-    align-items: flex-end;
+    justify-items: top;
+    align-items: stretch;
     position: fixed; /* Fix to bottom of screen */
-    bottom: 0;
+    bottom: 0px;
     left: 150px;
+    min-height: 6vh;
+    max-height: 20vh;
     right: 0;
     z-index: 50;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
@@ -310,43 +313,46 @@
 .textarea-container {
     flex: 1;
     width: 100%;
-    height: 100%;
+    height: auto;
+    display: flex;
+    align-items: stretch;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .textarea-container textarea {
     width: 100%;
-    height: 100%;
-    display: flex;
+    min-height: 1.5em; /* Minimum height (just over 1 line) */
+    max-height: 6em;
     padding: 12px;
-    border: 1px solid var(--color-border-secondary);
-    border-radius: 8px;
-    background: var(--color-background-primary);
+    padding: 12px;
+    border: none;
+    background: transparent;
     color: var(--color-text-primary);
     font-family: inherit;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.5;
     resize: none;
     overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .textarea-container textarea:focus {
     outline: none;
-    border-color: var(--color-accent-secondary);
 }
 
 .button-grid {
     display: grid;
-    grid-template-rows: repeat(auto-fit, minmax(40px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    background: transparent;
 }
 
 .button-grid button {
-    width: 7vw;
+    width: 6vw;
     height: 100%;
     padding: 8px;
-    border-radius: 4px;
-    background: var(--color-background-primary);
+    border: none;
+    background: transparent;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -368,7 +374,59 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(20px);
     z-index: 1000; /* High z-index to appear over chat */
-    overflow: hidden;
+    overflow: visible;
     animation: slideDown 0.3s ease-out;
     pointer-events: auto;
+    background: rgb(39, 32, 47);
+
+    /* Try to reset all the global settings, as it fucks up categories*/
+    button{
+        border: none;
+        cursor: pointer;
+        color: var(--color-text-secondary);
+        background-color: transparent;
+        width: auto;
+    }
+
+}
+.emoji-picker-container .EmojiPickerReact {
+    width: 100%;
+    height: 100%;
+    border: none;
+    box-shadow: none;
+}
+.emoji-picker-container .epr-category-nav button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.emoji-picker-container .epr-emoji-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    width: auto;
+    height: auto;
+    transition: none !important;
+    grid-template-columns: none !important;
+    display: inline-block !important;
+
+}
+
+.emoji-picker-container .epr-emoji-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.emoji-picker-container .EmojiPickerReact .epr-category-nav {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.emoji-picker-container .EmojiPickerReact .epr-emoji-category-label {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+.emoji-picker-container .EmojiPickerReact .epr-body {
+    height: calc(100% - 40px) !important; /* Adjust for header */
 }
