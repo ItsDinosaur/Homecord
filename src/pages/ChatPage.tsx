@@ -124,7 +124,7 @@ function ChatPage({ channel, username }: ChatPageProps) {
                             </MarkdownRenderer>
                         </div>
                         <span className="timestamp">
-                            {new Date(message.timestamp).toLocaleTimeString()}
+                            {formatChatTimestamp(message.timestamp)}
                         </span>
                     </div>
                 ))}
@@ -206,6 +206,25 @@ function ChatPage({ channel, username }: ChatPageProps) {
     );
 }
 export default ChatPage;
+
+function formatChatTimestamp(input: Date | string | number): string {
+  const date = new Date(input);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const oneDayMs = 24 * 60 * 60 * 1000;
+
+  if (diffMs < oneDayMs) {
+    // Format as HH:mm
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } else {
+    // Format as DD/MM/YY
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}/${month}/${year}`;
+  }
+}
+
 
 /*
 return (
