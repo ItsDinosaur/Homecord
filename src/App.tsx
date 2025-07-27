@@ -32,27 +32,6 @@ function App() {
   const { connectWebSocket } = useChatSocket();
 
   useEffect(() => {
-    const initializeWebSocket = async () => {
-      try {
-        await connectWebSocket(); // Don't assign if it returns void
-
-        // Get the socket from the manager after connection
-        const connectedSocket = wsManager.getWebSocket();
-
-        if (connectedSocket) {
-          console.log('WebSocket connected');
-          setSocket(connectedSocket);
-        } else {
-          console.error('Failed to connect WebSocket');
-        }
-      } catch (error) {
-        console.error('WebSocket connection error:', error);
-      }
-    };
-
-    initializeWebSocket();
-  }, []);
-  useEffect(() => {
     // Apply saved color palette on app startup
     const savedPaletteId = getCurrentPalette();
     const palette = colorPalettes.find(p => p.id === savedPaletteId);
@@ -61,9 +40,21 @@ function App() {
     }
   }, []);
 
-  const handleLoginSuccess = (loggedInUsername: string) => {
+  const handleLoginSuccess = async (loggedInUsername: string) => {
     setIsLoggedIn(true);
     setUsername(loggedInUsername); // We should create a context for UserData so we can access it globally like username, userID, settings ....
+
+    // Initialize WebSocket after successful login
+    try {
+      await connectWebSocket();
+      const connectedSocket = wsManager.getWebSocket();
+      if (connectedSocket) {
+        setSocket(connectedSocket);
+        console.log('WebSocket connected after login');
+      }
+    } catch (error) {
+      console.error('WebSocket connection error:', error);
+    }
 
     //fetchChannels 
     console.log("Fetching channels for room:", roomId);
