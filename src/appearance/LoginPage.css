@@ -1,50 +1,93 @@
 .login-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     height: 100vh;
+    gap: 5vw;
     width: 100vw;
-    background-color: var(--color-background-tertiary);
-    gap: 17%;
 }
 
-.login-content {
-    background-color: var(--color-background-primary);
-    border: 1px solid var(--color-border-primary);
-    border-radius: 8px;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
-    padding: 2em;
-    width: 88vw;
-    max-width: fit-content;
-    backdrop-filter: blur(19px), saturate(180%);    
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 350px;
+  width: 300px;
+  flex-direction: column;
+  gap: 35px;
+  border-radius: 8px;
 }
 
-form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1em;
+.inputBox {
+  position: relative;
+  width: 250px;
 }
 
-input{
-    display: block;
-    height: 50px;
-    width: 100%;
-    background-color: var(--color-background-secondary);
-    border-radius: 3px;
-    padding: 0 10px;
-    margin-top: 8px;
-    font-size: 14px;
-    font-weight: 300;
+.inputBox input {
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1em;
+  background: transparent;
+  border-left: 2px solid #e3e3e3;
+  border-bottom: 2px solid #e3e3e3;
+  transition: 0.1s;
+  border-bottom-left-radius: 8px;
 }
-form *{
-    font-family: 'Poppins',sans-serif;
-    color: var(--color-text-primary);
-    letter-spacing: 0.5px;
-    outline: none;
-    border: none;
+
+.inputBox span {
+  margin-top: 5px;
+  position: absolute;
+  left: 0;
+  transform: translateY(-4px);
+  margin-left: 10px;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 12px;
+  color: #e3e3e3;
+  text-transform: uppercase;
+  transition: 0.5s;
+  letter-spacing: 3px;
+  border-radius: 8px;
 }
+
+.inputBox input:valid~span,
+.inputBox input:focus~span {
+  transform: translateX(113px) translateY(-15px);
+  font-size: 0.8em;
+  padding: 5px 10px;
+  background: #000;
+  letter-spacing: 0.2em;
+  color: #fff;
+  border: 2px;
+}
+
+.inputBox input:valid,
+.inputBox input:focus {
+  border: 2px solid #e3e3e3;
+  border-radius: 8px;
+}
+
+.enter {
+  height: 45px;
+  width: auto;
+  border-radius: 5px;
+  border: 2px solid #000;
+  cursor: pointer;
+  background-color: transparent;
+  transition: 0.5s;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 1em;
+}
+
+.enter:hover {
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+
+
 ::placeholder{
     color: var(--color-text-secondary);
 }

@@ -3,6 +3,7 @@ import { LoginResponse } from "../types/Interfaces";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "react-toastify";
+import login_background from "../assets/login_background.jpg";
 
 
 interface LoginPageProps {
@@ -13,7 +14,7 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleLogin = (e: React.FormEvent) => {
         //debug
         if (username === "debug" || password === "debug") {
             onLoginSuccess(username);
@@ -42,38 +43,53 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
                 toast.error("Error: " + error);
             });
     };
+    const handleCreateAccount = (e: React.FormEvent) => {
+        e.preventDefault();
+        /*
+        invoke<LoginResponse>("create_account", { username, password })
+            .then((response) => {
+                console.log("Create account response:", response);
+                toast.success("Account created successfully");
+                onLoginSuccess(username);
+            })
+            .catch((error) => {
+                console.error("Error during account creation:", error);
+                toast.error("Error: " + error);
+            });
+        */
+       toast.info("Account creation is not available yet.");
+    };
 
     return (
-        <div className="login-page">
-            <h1>Login Page</h1>
-            <div className="login-content">
-                <form onSubmit={handleSubmit} className="login-form"> 
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            required 
-                            value = {username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Enter username"
-                            className="input"
-                        />
-                        <input type="password" 
-                            id="password" 
-                            name="password" 
-                            required 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
-                            placeholder="Enter password"
-                            className="input"
-                        />
-                    <button type="submit">Login</button>
-                    <button type="button" onClick={() => alert("Create User functionality not implemented yet")}>
-                        Create User
-                    </button>
-                </form>
+        <div className="login-page"
+        style={{
+            backgroundImage: `url(${login_background})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+        }}>
+        <h1 className="logo">Homecord</h1>
+        <div className="login-content">
+        <div className="card">
+            <div className="inputBox">
+                <input type="text" required={true}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                ></input>
+                <span className="user">Username</span>
             </div>
+            <div className="inputBox">
+                <input type="password" required={true}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                ></input> 
+                <span>Password</span>
+            </div>
+            <button className="enter" onClick={handleLogin}>Log in</button>
+            <button className="enter" onClick={handleCreateAccount}>Create account</button>
+        </div>
+        </div>
         </div>
     );
-    }
+}
 export default LoginPage;
