@@ -11,24 +11,24 @@ interface Participant {
 }
 
 interface VoicePageProps {
-  channelId: Channel;
+  channel: Channel;
   ws: WebSocket;
 }
 
-export default function VoicePage({ channelId, ws }: VoicePageProps) {
+export default function VoicePage({ channel, ws }: VoicePageProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
-
+  var channel_id = channel.channel_id;
   // Auto connect when page loads
   useEffect(() => {
-    invoke("start_call", { channelId })
+    invoke("start_call", { channel_id })
       .then(() => console.log("Connected to call"))
       .catch(console.error);
 
     // Clean up when leaving page
     return () => {
-      invoke("stop_call", { channelId }).catch(console.error);
+      invoke("stop_call", { channel_id }).catch(console.error);
     };
-  }, [channelId]);
+  }, [channel_id]);
 
   return (
     <div className="w-full h-full flex items-center justify-center bg-gray-900">

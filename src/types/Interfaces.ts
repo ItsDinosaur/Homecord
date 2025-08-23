@@ -4,7 +4,7 @@ export interface Channel {
     room_id: string,
     channel_name: string,
     description: string,
-    channel_type: string,
+    channel_type: channelType,
     position: number,
 }
 
@@ -23,4 +23,9 @@ export interface Message {
 export interface LoginResponse {
     access_token: string;
     refresh_token: string;
+}
+
+export enum channelType {
+    TEXT = "TEXT",
+    VOICE = "VOICE",
 }
