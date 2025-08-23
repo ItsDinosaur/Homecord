@@ -14,13 +14,14 @@
 }
 
 .card {
+  padding-top: 5vh;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 350px;
   width: 300px;
   flex-direction: column;
-  gap: 35px;
+  gap: 40px;
   border-radius: 8px;
 }
 
@@ -36,6 +37,7 @@
   border: none;
   color: #ffffff;
   font-size: 1em;
+  font-weight: bold;
   background: transparent;
   border-left: 2px solid #e3e3e3;
   border-bottom: 2px solid #e3e3e3;
@@ -51,7 +53,8 @@
   margin-left: 10px;
   padding: 10px;
   pointer-events: none;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: bold;
   color: #e3e3e3;
   text-transform: uppercase;
   transition: 0.5s;
@@ -82,13 +85,14 @@
   text-transform: uppercase;
   font-size: 10px;
   letter-spacing: 2px;
-  margin-bottom: 1em;
   padding: 0 20px;
+  font-weight: bold;
 }
 
 .enter:hover {
   background-color: var(--color-accent-secondary);
   color: var(--color-text-primary);
+  font-weight: bold;
 }
 
 ::placeholder{

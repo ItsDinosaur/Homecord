@@ -17,18 +17,13 @@ interface VoicePageProps {
 
 export default function VoicePage({ channel, ws }: VoicePageProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
-  var channel_id = channel.channel_id;
   // Auto connect when page loads
   useEffect(() => {
-    invoke("start_call", { channel_id })
+    invoke("start_call", { channel})
       .then(() => console.log("Connected to call"))
       .catch(console.error);
 
-    // Clean up when leaving page
-    return () => {
-      invoke("stop_call", { channel_id }).catch(console.error);
-    };
-  }, [channel_id]);
+  }, [channel]);
 
   return (
     <div className="w-full h-full flex items-center justify-center bg-gray-900">

@@ -203,13 +203,13 @@ pub async fn fetchMessages(channel_id: String) -> Result<Vec<Message>, String> {
 }
 
 #[tauri::command]
-pub async fn start_call(channel_id: String) -> Result<(), String> {
+pub async fn start_call(channel: Channel) -> Result<(), String> {
     // Implementation for starting a call
     Ok(())
 }
 
 #[tauri::command]
-pub async fn stop_call(channel_id: String) -> Result<(), String> {
+pub async fn stop_call(channel: Channel) -> Result<(), String> {
     // Implementation for stopping a call
     Ok(())
 }
