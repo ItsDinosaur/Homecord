@@ -148,7 +148,7 @@ function App() {
             return <ChatPage channel={currentChannel} username={username} />;
           case "voice":
             return socket ? (
-              <VoicePage channel={currentChannel} userId={userId} ws={socket} />
+              <VoicePage channelId={currentChannel} ws={socket} />
             ) : (
               <div>Connecting to voice...</div>
             );

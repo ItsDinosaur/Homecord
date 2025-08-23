@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { Channel } from "../types/Interfaces";
 
 // Fake users for now — later will come from WebRTC
 interface Participant {
@@ -9,7 +10,12 @@ interface Participant {
   audioEnabled: boolean;
 }
 
-export default function VoicePage({ channelId }: { channelId: string }) {
+interface VoicePageProps {
+  channelId: Channel;
+  ws: WebSocket;
+}
+
+export default function VoicePage({ channelId, ws }: VoicePageProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
 
   // Auto connect when page loads

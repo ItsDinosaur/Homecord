@@ -68,6 +68,7 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
         }}>
+        <div className="login-overlay">
         <h1 className="logo">Homecord</h1>
         <div className="login-content">
         <div className="card">
@@ -87,6 +88,7 @@ function LoginPage( { onLoginSuccess }: LoginPageProps) {
             </div>
             <button className="enter" onClick={handleLogin}>Log in</button>
             <button className="enter" onClick={handleCreateAccount}>Create account</button>
+        </div>
         </div>
         </div>
         </div>
