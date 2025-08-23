@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 mod commands;
 mod user;
+mod webrtc_d;
 use crate::commands::*;
 
 
@@ -14,7 +15,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![login, greet, get_access_token, get_refresh_token, store_tokens,
-            fetchChannels, fetchMessages, start_call, stop_call, send_webrtc_signal])
+            fetchChannels, fetchMessages, start_call, add_local_ice, relay_ice_to_server])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

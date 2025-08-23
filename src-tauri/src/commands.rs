@@ -202,20 +202,98 @@ pub async fn fetchMessages(channel_id: String) -> Result<Vec<Message>, String> {
     }
 }
 
+
+///  WEBRTC
+use std::sync::Arc;
+use tauri::{State, Window};
+
+use crate::webrtc_d::{manager::WebRtcManager, signaling};
+
+#[derive(Deserialize)]
+pub struct StartCallArgs {
+    pub channel_id: String,
+    pub peer_id: String,
+    pub signaling_base_url: String, // e.g. http://your-server:3000
+    pub auth_token: Option<String>,
+}
+use futures::future::Future;
+use std::pin::Pin;
 #[tauri::command]
-pub async fn start_call(channel: Channel) -> Result<(), String> {
-    // Implementation for starting a call
+pub async fn start_call<'a>(
+    window: Window,
+    state: State<'a, Arc<WebRtcManager>>,
+    args: StartCallArgs,
+) -> Result<(), String> {
+    let peer = state.get_or_create_peer(args.channel_id.clone(), args.peer_id.clone()).await;
+
+    // function that posts offer -> returns answer.sdp
+    let post_offer = move |sdp: String| {
+        let base = args.signaling_base_url.clone();
+        let ch = args.channel_id.clone();
+        let pid = args.peer_id.clone();
+        let tok = args.auth_token.clone();
+        Box::pin(async move {
+            signaling::post_offer_to_server(&base, &ch, &pid, sdp, tok).await
+        }) as Pin<Box<dyn Future<Output = Result<String, String>> + Send>>
+    };
+
+    // Negotiate
+    peer.start_and_negotiate(post_offer).await?;
+
+    // Notify UI (optional)
+    println!("Call started for channel ");
     Ok(())
 }
 
-#[tauri::command]
-pub async fn stop_call(channel: Channel) -> Result<(), String> {
-    // Implementation for stopping a call
-    Ok(())
+#[derive(Deserialize)]
+pub struct IceArgs {
+    pub channel_id: String,
+    pub peer_id: String,
+    pub candidate: String,
+    pub sdp_mid: Option<String>,
+    pub sdp_mline_index: Option<u16>,
 }
 
 #[tauri::command]
-pub async fn send_webrtc_signal(signal: String) -> Result<(), String> {
-    // Implementation for sending a WebRTC signal
-    Ok(())
+pub async fn add_local_ice<'a>(
+    _window: Window,
+    state: State<'a, Arc<WebRtcManager>>,
+    args: IceArgs,
+) -> Result<(), String> {
+    let Some(peer) = state.get_peer(&args.channel_id, &args.peer_id).await else {
+        return Err("peer not found".into());
+    };
+    peer.add_ice_candidate(args.candidate, args.sdp_mid, args.sdp_mline_index).await
+}
+
+#[derive(Deserialize)]
+pub struct RelayIceArgs {
+    pub channel_id: String,
+    pub peer_id: String,
+    pub signaling_base_url: String,
+    pub auth_token: Option<String>,
+    pub candidate: String,
+    pub sdp_mid: Option<String>,
+    pub sdp_mline_index: Option<u16>,
+}
+
+#[tauri::command]
+pub async fn relay_ice_to_server<'a>(
+    _window: Window,
+    _state: State<'a, Arc<WebRtcManager>>,
+    args: RelayIceArgs,
+) -> Result<(), String> {
+    let cand = signaling::IceCandidateRequest {
+        peer_id: args.peer_id.clone(),
+        candidate: args.candidate,
+        sdp_mid: args.sdp_mid,
+        sdp_mline_index: args.sdp_mline_index,
+    };
+    signaling::post_ice_to_server(
+        &args.signaling_base_url,
+        &args.channel_id,
+        &args.peer_id,
+        cand,
+        args.auth_token,
+    ).await
 }
