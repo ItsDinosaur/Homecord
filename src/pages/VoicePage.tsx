@@ -1,76 +1,73 @@
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { Channel } from "../types/Interfaces";
-
-// Fake users for now — later will come from WebRTC
-interface Participant {
-  id: string;
-  name: string;
-  videoEnabled: boolean;
-  audioEnabled: boolean;
-}
+import { useWebRTC } from '../hooks/useWebRTC';
+import { useRef, useEffect } from "react";
+import '../appearance/VoicePage.css';
 
 interface VoicePageProps {
-  channel: Channel;
-  ws: WebSocket;
+    channel: Channel;
+    userId: string;
+    ws: WebSocket;
 }
 
-export default function VoicePage({ channel, ws }: VoicePageProps) {
-  const [participants, setParticipants] = useState<Participant[]>([]);
-  // Auto connect when page loads
-  useEffect(() => {
-    invoke("start_call", { channel})
-      .then(() => console.log("Connected to call"))
-      .catch(console.error);
+function VoicePage({ channel, userId, ws }: VoicePageProps) {
+    const {
+        startVoice,
+        startVideo,
+        startScreenShare,
+        remoteStreams,
+        localStream
+    } = useWebRTC(ws, userId);
 
-  }, [channel]);
+    const localVideoRef = useRef<HTMLVideoElement>(null);
+    const remoteVideoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
-  return (
-    <div className="w-full h-full flex items-center justify-center bg-gray-900">
-      <div
-        className="grid grid-cols-3 grid-rows-3 gap-6 transform rotate-45"
-        style={{ width: "80%", height: "80%" }}
-      >
-        {/* Fill with 4 slots in diamond shape */}
-        <div className="col-start-2 row-start-1 flex items-center justify-center">
-          {renderSlot(participants[0])}
-        </div>
-        <div className="col-start-1 row-start-2 flex items-center justify-center">
-          {renderSlot(participants[1])}
-        </div>
-        <div className="col-start-3 row-start-2 flex items-center justify-center">
-          {renderSlot(participants[2])}
-        </div>
-        <div className="col-start-2 row-start-3 flex items-center justify-center">
-          {renderSlot(participants[3])}
-        </div>
-      </div>
-    </div>
-  );
-}
+    useEffect(() => {
+        if (localStream && localVideoRef.current) {
+            localVideoRef.current.srcObject = localStream;
+        }
+    }, [localStream]);
 
-// Helper to render a participant box
-function renderSlot(user?: Participant) {
-  if (!user) {
+    useEffect(() => {
+        Object.entries(remoteStreams).forEach(([userId, stream]) => {
+            if (remoteVideoRefs.current[userId]) {
+                remoteVideoRefs.current[userId]!.srcObject = stream as MediaStream;
+            }
+        });
+    }, [remoteStreams]);
+
     return (
-      <div className="w-32 h-32 rounded-xl bg-gray-700 flex items-center justify-center transform -rotate-45">
-        <span className="text-gray-400">Empty</span>
-      </div>
-    );
-  }
+        <div className="voice-page">
+            <div>
+                <button onClick={() => startVoice(channel.channel_id)}>Join Voice</button>
+                <button onClick={startVideo}>Start Video</button>
+                <button onClick={startScreenShare}>Share Screen</button>
 
-  return (
-    <div className="w-32 h-32 rounded-xl bg-gray-800 text-white flex items-center justify-center transform -rotate-45">
-      {user.videoEnabled ? (
-        <video
-          autoPlay
-          playsInline
-          muted={!user.audioEnabled}
-          className="w-full h-full object-cover rounded-xl"
-        />
-      ) : (
-        <span className="text-lg">{user.name}</span>
-      )}
-    </div>
-  );
+                <div>
+                    <h3>You</h3>
+                    <video
+                        ref={localVideoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        style={{ width: '200px' }}
+                    />
+                </div>
+
+                <div>
+                    <h3>Participants</h3>
+                    {Object.keys(remoteStreams).map(userId => (
+                        <div key={userId}>
+                            <video
+                                ref={el => { remoteVideoRefs.current[userId] = el; }}
+                                autoPlay
+                                playsInline
+                                style={{ width: '200px' }}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 }
+export default VoicePage;
